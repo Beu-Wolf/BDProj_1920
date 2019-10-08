@@ -1,7 +1,9 @@
 
-\documentclass[12pt]{report}
+\documentclass[10pt]{report}
+\usepackage[textwidth=17cm]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{graphicx}
 
 \begin{document}
 
@@ -25,21 +27,61 @@
         \end{center}
 \end{titlepage}
 
-\clearpage\mbox{}\clearpage
+\begin{center}
+    \vspace*{-2cm}
+    \includegraphics[width=1.4\textwidth, angle=90]{../BDProj1.jpg}
+\end{center}
+\newpage
 
     \LARGE
-    \centering{\textbf{Problemas do Modelo e Restrições de Integridade}}
+    \begin{center}
+        \textbf{Problemas do Modelo e Restrições de Integridade}
+    \end{center}
+
+    \bigskip
+    \bigskip
 
     \normalsize
-    \begin{itemize}
-        \item O nosso modelo permite que, numa anomalia de tradução, a segunda zona e segunda língua da imagem sejam idênticas à primeira;
+
+    \noindent De seguida apresentam-se as justifações às decisões tomadas durante a conceção do modelo. 
+
+    \vspace*{10mm}
+    \noindent\textbf{INCIDÊNCIA}
+
+        As incidências foram consideradas como entidades independentes. Deste modo, são-lhes atribuídos IDs para as identificar.
+        Dado que uma incidência se refere a anomalias, considerou-se que a primeira não pode existir sem ter uma anomalia, nem estar associada a nenhum local.
     
-            \quad \textbf{Restrições:}
-            \begin{itemize}
-                \item IC:coordenadas 2 != coordenadas
-                \item IC: língua 2 != língua
-            \end{itemize}  
-          
-    \end{itemize}
+    \vspace*{10mm}
+    \noindent\textbf{ANOMALIA}
+
+        
+        Uma anomalia é identificada pela zona da imagem que a caracteriza, sendo a imagem e a respetiva zona atributos distintos.
+        Uma anomalia pode pertencer a várias incidências (permite identificar anomalias duplicadas).
+        O modelo não proíbe que uma anomalia de tradução tenha zonas de imagens ou par de línguas iguais. Serão impostas restrições de integridade para que as duas zonas não se sobreponham e as línguas não sejam iguais.
+    
+    \vspace*{10mm}
+    \noindent\textbf{CORREÇÃO}
+
+        
+        Uma correção é tomada como uma entidade fraca uma vez que esta não existe sem um utilizador que a crie nem uma anomalia para corrigir. Estes são precisos para a identificar.
+    
+
+    \vspace*{10mm}
+    \noindent\textbf{HISTÓRICO}
+
+        
+        O Histórico foi modelado como uma entidade independente, com os seus próprios atributos e métodos, associada aos locais e Entidades Responsáveis para permitir que uma entidade seja responsável pelo mesmo local em períodos de tempo distintos.
+        O Histórico tem a data de início e de fim dos períodos de responsabilidade para permitir que uma entidade responsável seja responsável por um mesmo local em períodos distintos. A data de fim não pode ser anterior à data de início.
+    
+
+    \vspace*{10mm}
+    \noindent\textbf{ENTIDADES}
+
+        
+        O organismo público e o espaço comercial têm cada um o seu atributo primário ("nome"). Será imposta uma restrição de integridade para que os 
+        nomes destes não sejam iguais. Esta unicidade do nome poderia ser resolvida com uma associação das duas entidades a uma super-entidade, 
+        mas tal não seria coerente com os conceitos desenvolvidos no presente modelo. Para além disso, também não permitiria que, 
+        futuramente, um organismo público e um espaço comercial venham a ter o mesmo nome.
+    
 
 \end{document}
