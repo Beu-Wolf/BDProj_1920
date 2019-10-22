@@ -1,0 +1,192 @@
+\documentclass[12pt]{report}
+\usepackage[textwidth=17cm, margin=2cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{multicol}
+
+\begin{document}
+
+    \begin{titlepage}
+        \begin{center}
+
+            \vspace*{\fill}
+            \Huge
+            \textbf{Projeto de Bases de Dados - Parte 2}
+            
+            \vspace*{\fill}
+
+            \Large
+            \textbf{Grupo 27} \\
+            89427 - Daniel Seara - 33,3\% - 3 horas \\
+            89399 - Afonso Gonçalves - 33,3\% - 3 horas \\
+            89496 - Marcelo Santos - 33,3\% - 3 horas \\
+
+            \bigskip
+            \textbf{Turno:} 4ª Feira 9h30 - Lab 8\\ \textbf{Professor:} Duarte Galvão
+        
+        \end{center}
+    \end{titlepage}
+
+
+
+
+
+
+\Large
+\textbf{Modelo Relacional:}\\
+
+\normalsize
+\vspace{2mm}
+
+\begin{multicols}{2}
+Item(\underline{id}, descrição, localização, coordenadas)
+    \begin{itemize}
+    \item coordenadas: FK(Local Público)
+    \item unique(id)
+    \end{itemize}
+
+\vspace{5mm}
+
+%Add integrity constraint for disjointness and Total participation
+
+Utilizador(\underline{email}, password)
+    \begin{itemize}
+    \item unique(email)
+    \end{itemize}
+
+
+Utilizador Regular(\underline{email})
+    \begin{itemize}
+    \item email: FK(Utilizador)
+    \item unique(email)
+    \end{itemize}
+
+
+Utilizador Qualificado(\underline{email})
+    \begin{itemize}
+    \item email: FK(Utilizador)
+    \item unique(email)
+    \end{itemize}
+
+\vspace{5mm}
+
+%Add integrity constraint for disjointness and Total participation
+% and RI-1 and RI-2 from project description
+
+
+Anomalia(\underline{id}, descrição, ts, zona, imagem, língua)
+    \begin{itemize}
+    \item unique(id)
+    \end{itemize}
+
+
+Anomalia Redação(\underline{id})
+    \begin{itemize}
+    \item id: FK(Anomalia)
+    \item unique(id)
+    \end{itemize}
+
+
+Anomalia Tradução(\underline{id}, zona1, zona2)
+    \begin{itemize}
+    \item id: FK(Anomalia)
+    \item unique(id)
+    \end{itemize}
+
+
+\vspace{5mm}
+
+
+Local Público(\underline{coordenadas})
+    \begin{itemize}
+    \item unique(coordenadas)
+    \end{itemize}
+
+
+\vspace{5mm}
+
+
+Proposta de Correção(\underline{email, nro}, datahora, texto)
+    \begin{itemize}
+    \item email: FK(Utilizador Qualificado)
+    \item unique(email, nro)
+    \end{itemize}
+
+
+
+\vspace{5mm}
+
+
+cria(\underline{nro}, U\_email)
+    \begin{itemize}
+    \item nro: FK(Proposta Correção)
+    \item U\_email: FK(Utilizador Qualificado)
+    \item unique(nro)                           %Is it a candidate key?
+    \end{itemize}   
+
+
+\vspace{5mm}
+
+%Add RI-3 from project decription
+
+
+duplicado(\underline{I\_id1, I\_id2})
+    \begin{itemize}
+    \item I\_id1, I\_id2: FK(Item)
+    \item unique(I\_id1, I\_id2)                      %Is it?                          
+    \end{itemize}
+
+
+\vspace{5mm}
+
+
+existe\_em(\underline{I\_id}, coordendas)
+    \begin{itemize}
+    \item I\_id: FK(Item)
+    \item coordendas: FK(Local Público)
+    \item unique(I\_id)                                             
+    \end{itemize}
+
+
+\vspace{5mm}
+
+
+incidência(\underline{A\_id}, U\_email, I\_id)
+    \begin{itemize}
+    \item A\_id: FK(Anomalia)
+    \item U\_email: FK(Utilizador)
+    \item I\_id: FK(Item)
+    \item unique(A\_id)                                             
+    \end{itemize}
+
+
+\vspace{5mm}
+
+
+correção(\underline{nro, A\_id, U\_email, I\_id})
+    \begin{itemize}
+    \item nro: FK(Proposta de Correção)
+    \item A\_id, U\_email, I\_id: FK(incidência)
+    \item unique(nro, A\_id, U\_email, I\_id)              % Is it?
+    \end{itemize}
+
+\end{multicols}
+
+\Large
+\textbf{Restrições de Integridade: }\\
+
+\normalsize
+\begin{enumerate}
+    \item RI-1 - As \textit{zonas} não se podem sobrepor
+    \item RI-2 - As \textit{línguas} não podem ser iguais
+    \item RI-3 - Um \textit{item} não pode ser duplicado de si próprio
+    \item RI-4 - Cada \textit{nro} de \textit{Propostas de Correção} tem de estar em \textit{incidência}
+    \item RI-5 - Cada \textit{U\_email} tem de estar em \textit{Utilizador Qualificado} ou em \textit{Utilizador Regular}, mas não em ambos
+    \item RI-6 - Cada \textit{A\_id} tem de estar em \textit{Anomalida Redação} ou em \textit{Anomalia Tradução}, mas não em ambos
+    
+\end{enumerate}
+
+
+\end{document}
