@@ -44,7 +44,6 @@
 Item(\underline{id}, descrição, localização, coordenadas)
     \begin{itemize}
     \item coordenadas: FK(Local Público)
-    \item unique(id)
     \end{itemize}
 
 \vspace{5mm}
@@ -52,22 +51,16 @@ Item(\underline{id}, descrição, localização, coordenadas)
 %Add integrity constraint for disjointness and Total participation
 
 Utilizador(\underline{email}, password)
-    \begin{itemize}
-    \item unique(email)
-    \end{itemize}
-
 
 Utilizador Regular(\underline{email})
     \begin{itemize}
     \item email: FK(Utilizador)
-    \item unique(email)
     \end{itemize}
 
 
 Utilizador Qualificado(\underline{email})
     \begin{itemize}
     \item email: FK(Utilizador)
-    \item unique(email)
     \end{itemize}
 
 \vspace{5mm}
@@ -77,22 +70,17 @@ Utilizador Qualificado(\underline{email})
 
 
 Anomalia(\underline{id}, descrição, ts, zona, imagem, língua)
-    \begin{itemize}
-    \item unique(id)
-    \end{itemize}
 
 
 Anomalia Redação(\underline{id})
     \begin{itemize}
     \item id: FK(Anomalia)
-    \item unique(id)
     \end{itemize}
 
 
-Anomalia Tradução(\underline{id}, zona1, zona2)
+Anomalia Tradução(\underline{id}, língua2, zona2)
     \begin{itemize}
     \item id: FK(Anomalia)
-    \item unique(id)
     \end{itemize}
 
 
@@ -100,31 +88,17 @@ Anomalia Tradução(\underline{id}, zona1, zona2)
 
 
 Local Público(\underline{coordenadas})
-    \begin{itemize}
-    \item unique(coordenadas)
-    \end{itemize}
 
 
 \vspace{5mm}
 
 
-Proposta de Correção(\underline{email, nro}, datahora, texto)
+Proposta de Correção(\underline{nro, email, anomalia\_id}, datahora, texto)
     \begin{itemize}
-    \item email: FK(Utilizador Qualificado)
-    \item unique(email, nro)
+	    \item email: FK(Utilizador Qualificado)
+	    \item anomalia\_id: FK(Incidência)
     \end{itemize}
 
-
-
-\vspace{5mm}
-
-
-cria(\underline{nro}, U\_email)
-    \begin{itemize}
-    \item nro: FK(Proposta Correção)
-    \item U\_email: FK(Utilizador Qualificado)
-    \item unique(nro)                           %Is it a candidate key?
-    \end{itemize}   
 
 
 \vspace{5mm}
@@ -132,45 +106,23 @@ cria(\underline{nro}, U\_email)
 %Add RI-3 from project decription
 
 
-duplicado(\underline{I\_id1, I\_id2})
+Duplicado(\underline{id1, id2})
     \begin{itemize}
-    \item I\_id1, I\_id2: FK(Item)
-    \item unique(I\_id1, I\_id2)                      %Is it?                          
+	    \item id1, id2: FK(Item(id))
     \end{itemize}
 
 
 \vspace{5mm}
 
-
-existe\_em(\underline{I\_id}, coordendas)
+Incidência(\underline{anomalia\_id}, email, item\_id)
     \begin{itemize}
-    \item I\_id: FK(Item)
-    \item coordendas: FK(Local Público)
-    \item unique(I\_id)                                             
+	    \item anomalia\_id: FK(Anomalia(id))
+	    \item email: FK(Utilizador)
+	    \item item\_id: FK(Item(id))
     \end{itemize}
 
 
 \vspace{5mm}
-
-
-incidência(\underline{A\_id}, U\_email, I\_id)
-    \begin{itemize}
-    \item A\_id: FK(Anomalia)
-    \item U\_email: FK(Utilizador)
-    \item I\_id: FK(Item)
-    \item unique(A\_id)                                             
-    \end{itemize}
-
-
-\vspace{5mm}
-
-
-correção(\underline{nro, A\_id, U\_email, I\_id})
-    \begin{itemize}
-    \item nro: FK(Proposta de Correção)
-    \item A\_id, U\_email, I\_id: FK(incidência)
-    \item unique(nro, A\_id, U\_email, I\_id)              % Is it?
-    \end{itemize}
 
 \end{multicols}
 
@@ -182,9 +134,9 @@ correção(\underline{nro, A\_id, U\_email, I\_id})
     \item RI-1 - As \textit{zonas} não se podem sobrepor
     \item RI-2 - As \textit{línguas} não podem ser iguais
     \item RI-3 - Um \textit{item} não pode ser duplicado de si próprio
-    \item RI-4 - Cada \textit{nro} de \textit{Propostas de Correção} tem de estar em \textit{incidência}
-    \item RI-5 - Cada \textit{U\_email} tem de estar em \textit{Utilizador Qualificado} ou em \textit{Utilizador Regular}, mas não em ambos
-    \item RI-6 - Cada \textit{A\_id} tem de estar em \textit{Anomalida Redação} ou em \textit{Anomalia Tradução}, mas não em ambos
+    \item RI-4 - Cada \textit{U\_email} tem de estar em \textit{Utilizador Qualificado} ou em \textit{Utilizador Regular}, mas não em ambos
+    \item RI-5 - Cada \textit{A\_id} tem de estar em \textit{Anomalida Redação} ou em \textit{Anomalia Tradução}, mas não em ambos
+    \item RI-6 - O tuplo (\textit{id1}, \textit{id2}) em \textit{Duplicado} não pode ser uma permutação de outro tuplo na relação
     
 \end{enumerate}
 
