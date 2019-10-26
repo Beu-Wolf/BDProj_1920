@@ -93,9 +93,10 @@ Local Público(\underline{coordenadas})
 \vspace{5mm}
 
 
-Proposta de Correção(\underline{email, nro}, datahora, texto)
+Proposta de Correção(\underline{nro, email, anomalia\_id}, datahora, texto)
     \begin{itemize}
-    \item email: FK(Utilizador Qualificado)
+	    \item email: FK(Utilizador Qualificado)
+	    \item anomalia\_id: FK(Incidência)
     \end{itemize}
 
 
@@ -133,13 +134,6 @@ incidência(\underline{anomalia\_id}, email, item\_id)
 
 \vspace{5mm}
 
-
-correção(\underline{nro, A\_id, U\_email, I\_id})
-    \begin{itemize}
-    \item nro: FK(Proposta de Correção)
-    \item A\_id, U\_email, I\_id: FK(incidência)
-    \end{itemize}
-
 \end{multicols}
 
 \Large
@@ -150,9 +144,8 @@ correção(\underline{nro, A\_id, U\_email, I\_id})
     \item RI-1 - As \textit{zonas} não se podem sobrepor
     \item RI-2 - As \textit{línguas} não podem ser iguais
     \item RI-3 - Um \textit{item} não pode ser duplicado de si próprio
-    \item RI-4 - Cada \textit{nro} de \textit{Propostas de Correção} tem de estar em \textit{incidência}
-    \item RI-5 - Cada \textit{U\_email} tem de estar em \textit{Utilizador Qualificado} ou em \textit{Utilizador Regular}, mas não em ambos
-    \item RI-6 - Cada \textit{A\_id} tem de estar em \textit{Anomalida Redação} ou em \textit{Anomalia Tradução}, mas não em ambos
+    \item RI-4 - Cada \textit{U\_email} tem de estar em \textit{Utilizador Qualificado} ou em \textit{Utilizador Regular}, mas não em ambos
+    \item RI-5 - Cada \textit{A\_id} tem de estar em \textit{Anomalida Redação} ou em \textit{Anomalia Tradução}, mas não em ambos
     
 \end{enumerate}
 
