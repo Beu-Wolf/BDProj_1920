@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{enumitem}
 \usepackage{multicol}
+\usepackage{amsmath}
 
 \begin{document}
 
@@ -140,5 +141,18 @@ Incidência(\underline{anomalia\_id}, email, item\_id)
     
 \end{enumerate}
 
+\newpage
+\Large
+\textbf{Álgebra Relacional: }\\
+
+\begin{enumerate}
+	\item $\pi_{texto}(\sigma_{datahora = 2019}(\text{Proposta de Correção}))$
+	\item $\pi_{texto}(\text{Proposta de Correção}) \cup \pi_{\text{descrição}}(\sigma_{\text{(língua = Português)}}(Anomalia)) \cup
+		\pi_{\text{descrição}}(Item)$
+	\item $\pi_{password}(\sigma_{datahora = 1/10/2019})(\text{Utilizador}\bowtie\text{Proposta de Correção})$
+	\item $\pi_{email}(\sigma_{datahora = 1/10/2019 - 20:00}(\text{Proposta de Correção}))$
+	\item $R_{1} \gets id_{1}G_{count(id_{1}) \text{ as id\_count}}(Duplicado),$\\
+		$ \pi_{id_{1}}(R_{1} - \pi_{A.id_{1}, A.id\_count}(\sigma_{A.id\_count < B.id\_count}(\rho_{A}(R_{1}) \times \rho_{B}(R_{1}))))$
+\end{enumerate}
 
 \end{document}
