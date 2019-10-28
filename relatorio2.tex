@@ -155,4 +155,22 @@ Incidência(\underline{anomalia\_id}, email, item\_id)
 		$ \pi_{id_{1}}(R_{1} - \pi_{A.id_{1}, A.id\_count}(\sigma_{A.id\_count < B.id\_count}(\rho_{A}(R_{1}) \times \rho_{B}(R_{1}))))$
 \end{enumerate}
 
+\Large
+\textbf{SQL}
+
+\begin{enumerate}
+	\item SELECT \textit{texto} \\
+		FROM \textit{Proposta de Correção} \\
+		WHERE \textit{datahora} = 2019;
+	\item SELECT texto \\
+		FROM \textit{Proposta de Correção} \\
+		UNION \\
+		SELECT \textit{descrição} \\
+		FROM \textit{Anomalia} \\
+		WHERE \textit{língua = Português} \\
+		UNION \\
+		SELECT \textit{descrição} \\
+		FROM \textit{Item};
+\end{enumerate}
+
 \end{document}
