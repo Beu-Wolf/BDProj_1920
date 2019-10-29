@@ -48,10 +48,11 @@ Item(\underline{id}, descrição, localização, coordenadas)
     \end{itemize}
 
 \vspace{5mm}
-
 %Add integrity constraint for disjointness and Total participation
 
-Utilizador(\underline{email}, password)
+Utilizador(\underline{email}, password)$^{[RI-4]}$
+
+\vspace{5mm}
 
 Utilizador Regular(\underline{email})
     \begin{itemize}
@@ -70,7 +71,7 @@ Utilizador Qualificado(\underline{email})
 % and RI-1 and RI-2 from project description
 
 
-Anomalia(\underline{id}, descrição, ts, zona, imagem, língua)
+Anomalia(\underline{id}, descrição, ts, zona, imagem, língua)$^{[RI-1,2,5]}$
 
 
 Anomalia Redação(\underline{id})
@@ -79,7 +80,7 @@ Anomalia Redação(\underline{id})
     \end{itemize}
 
 
-Anomalia Tradução(\underline{id}, língua2, zona2)
+Anomalia Tradução(\underline{id}, língua2, zona2)$^{[RI-1,2]}$
     \begin{itemize}
     \item id: FK(Anomalia)
     \end{itemize}
@@ -90,11 +91,9 @@ Anomalia Tradução(\underline{id}, língua2, zona2)
 
 Local Público(\underline{coordenadas})
 
-
 \vspace{5mm}
 
-
-Proposta de Correção(\underline{nro, email}, datahora, texto)
+Proposta de Correção(\underline{nro, email}, datahora, texto)$^{[RI-6]}$
     \begin{itemize}
 	    \item email: FK(Utilizador Qualificado)
 	    \item anomalia\_id: FK(Incidência)
@@ -113,7 +112,7 @@ Correção(\underline{nro, email, anomalia\_id})
 %Add RI-3 from project decription
 
 
-Duplicado(\underline{id1, id2})
+Duplicado(\underline{id1, id2})$^{[RI-3]}$
     \begin{itemize}
 	    \item id1, id2: FK(Item(id))
     \end{itemize}
@@ -141,8 +140,8 @@ Incidência(\underline{anomalia\_id}, email, item\_id)
     \item RI-1 - As \textit{zonas} não se podem sobrepor
     \item RI-2 - As \textit{línguas} não podem ser iguais
     \item RI-3 - Um \textit{item} não pode ser duplicado de si próprio
-    \item RI-4 - Cada \textit{U\_email} tem de estar em \textit{Utilizador Qualificado} ou em \textit{Utilizador Regular}, mas não em ambos
-    \item RI-5 - Cada \textit{A\_id} tem de estar em \textit{Anomalida Redação} ou em \textit{Anomalia Tradução}, mas não em ambos
+    \item RI-4 - Cada \textit{email} tem de estar em \textit{Utilizador Qualificado} ou em \textit{Utilizador Regular}, mas não em ambos
+    \item RI-5 - Cada \textit{id} de \textit{Anomalia} tem de estar em \textit{Anomalia Redação} ou em \textit{Anomalia Tradução}, mas não em ambos
     \item RI-6 - Cada \textit{nro} de \textit{Proposta de Correção} tem de estar em \textit{Correção}
     
 \end{enumerate}
