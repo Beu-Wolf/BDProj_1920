@@ -51,10 +51,10 @@ create table anomalia_traducao (
 -- create assertion overlap_constraint check 
 -- (
 --     anomalia.lingua != anomalia_traducao.lingua2
---     anomalia.zona[0] != anomalia_traducao[0]
---     anomalia.zona[1] != anomalia_traducao[1]
---     anomalia.zona[2] != anomalia_traducao[2]
---     anomalia.zona[3] != anomalia_traducao[3]
+--     anomalia.zona[0] != anomalia_traducao.zona2[0]
+--     anomalia.zona[1] != anomalia_traducao.zona2[1]
+--     anomalia.zona[2] != anomalia_traducao.zona2[2]
+--     anomalia.zona[3] != anomalia_traducao.zona2[3]
 -- );
 
 create table duplicado (
