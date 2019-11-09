@@ -32,7 +32,7 @@ create table item (
 
 create table anomalia (
     id             integer not null,
-    zona           integer[4] not null,     --what do you think
+    zona           box not null,
     imagem         bytea not null,
     lingua         varchar(255) not null,
     ts             timestamp not null,
@@ -43,7 +43,7 @@ create table anomalia (
 
 create table anomalia_traducao (
     id             integer not null,
-    zona2          integer[4] not null,
+    zona2          box not null,
     lingua2        varchar(255) not null,
     constraint pk_anomalia_traducao primary key(id),
     constraint fk_anomalia_traducao_anomalia foreign key(id)
@@ -54,10 +54,7 @@ create table anomalia_traducao (
 -- create assertion overlap_constraint check 
 -- (
 --     anomalia.lingua != anomalia_traducao.lingua2
---     anomalia.zona[0] != anomalia_traducao.zona2[0]
---     anomalia.zona[1] != anomalia_traducao.zona2[1]
---     anomalia.zona[2] != anomalia_traducao.zona2[2]
---     anomalia.zona[3] != anomalia_traducao.zona2[3]
+--     not anomalia.zona && anomalia_traducao.zona2
 -- );
 
 create table duplicado (
