@@ -110,11 +110,11 @@ create table incidencia (
 
 
 create table proposta_de_correcao (
-    email              varchar(255) not null unique,
+    email              varchar(255) not null,
     nro                integer not null,
     data_hora          timestamp not null,                  --Is it Timestamp?
     texto              text not null,
-    constraint pk_proposta_de_correcao primary key(nro),   --Is this the primary key or email?
+    constraint pk_proposta_de_correcao primary key(email, nro),
     constraint fk_proposta_email foreign key(email)
                  references utilizador_qualificado(email)
 );
@@ -124,10 +124,8 @@ create table correcao (
     nro                integer not null,
     anomalia_id        integer not null,
     constraint pk_correcao primary key(email, nro, anomalia_id),
-    constraint fk_correcao_proposta foreign key(nro)
-                references proposta_de_correcao(nro),
-    constraint fk_correcao_proposta2 foreign key(email) 
-                references proposta_de_correcao(email),
+    constraint fk_correcao_proposta foreign key(email, nro)
+                references proposta_de_correcao(email, nro),
     constraint fk_correcao_incidencia foreign key(anomalia_id)
                 references incidencia(anomalia_id)
 );
