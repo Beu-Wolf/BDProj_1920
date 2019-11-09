@@ -70,7 +70,7 @@ create table duplicado (
 
 create table utilizador (
     email          varchar(255) not null,
-    pass           varchar(255) not null,               -- PASSWORD is a SQL command
+    password       varchar(255) not null,
     constraint pk_utilizador primary key(email)         
 );
 
