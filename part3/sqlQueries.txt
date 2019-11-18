@@ -1,12 +1,11 @@
-1. select L.latitude, L.longitude, L.nome 
-	from (local_publico natural join item) as L, incidencia as I 
-	where L.id = I.item_id 
-	group by L.latitude, L.longitude, L.nome 
-	having count(distinct anomalia_id) >= 
-	all(select count(distinct anomalia_id) 
-	from (local_publico natural join item) as L, incidencia as I 
-	where L.id = I.item_id 
-	group by L.latitude, L.longitude, L.nome); 
+1. with local_anomalia_count(latitude, longitude, nome, anomalia_count)
+   as (select L.latitude, L.longitude, L.nome, COUNT(*)
+       from (local_publico natural join item) as L, incidencia as I
+       where L.id = I.item_id
+       group by (latitude, longitude))
+select latitude, longitude, nome
+from local_anomalia_count
+where anomalia_count = (select MAX(anomalia_count) from local_anomalia_count);
 
 2. select U.email from utilizador_regular as U natural join incidencia natural join anomalia as A, anomalia_traducao as T
 	where A.ts >= 1.1.2019 00:00 and A.ts <= 30.6.2019 23h59 and A.id = T.id group by U.email having count(T.id) >=
