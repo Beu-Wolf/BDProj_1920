@@ -76,8 +76,8 @@ insert into duplicado values(2, 3);
 --         6 utilizadores (3 qualificados, e regulares)            --
 ---------------------------------------------------------------------
 
-insert into utilizador values('marcelo@xpto.com', 'S3cur3_5assW0rd');
-insert into utilizador values('afonso@cpleic.com', '1_L0v3_Cp5usp5us');
+insert into utilizador values('marcelo@xpto.com', 'S3cur3_PassW0rd');
+insert into utilizador values('afonso@cpleic.com', '1_L0v3_Cp1usp1us');
 insert into utilizador values('daniel@grupo23.com', '3sc0teir0_C0m_O');
 insert into utilizador values('ze@companhia.com', '1234');
 insert into utilizador values('to_ze@companhia.com', '4321');
