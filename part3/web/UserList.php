@@ -4,8 +4,8 @@
     <?php
         try {
             $host = "localhost";
-            $user = "daniel";
-            $password = "BDProj";
+            $user = getenv("POSTGRES_USER");
+            $password = getenv("POSTGRES_PASS");
             $dbname = "translateRight";
 
             $db = new PDO("pgsql:host=$host;dbname=$dbname", $user, $password);
