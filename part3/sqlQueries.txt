@@ -15,7 +15,7 @@ where anomalia_count = (select MAX(anomalia_count) from local_anomalia_count);
 		and A.ts <= '2019-06-30 23:59:59' 
 		group by email 
 		having count(distinct A.id) >= 
-		all(select count(distinct A.id) 
+   all(select count(distinct A.id) 
 		from (utilizador_regular natural join incidencia) as I, anomalia as A 
 		where I.anomalia_id = A.id 
 		and A.tem_anomalia_redacao=False 
@@ -24,20 +24,45 @@ where anomalia_count = (select MAX(anomalia_count) from local_anomalia_count);
 		group by email)
 
 
-3. with north as select * from local_publico where latitude > 39.336775
-   with incidencia_info as select * from item natural join incidencia natural join anomalia
+3. with north 
+as (select * 
+	from local_publico where latitude > 39.336775), 
+incidencia_info 
+as (select * 
+	from item as I, incidencia as N, anomalia as A 
+	where N.item_id = I.id 
+	and N.anomalia_id = A.id) 
+select distinct email 
+from (incidencia_info natural join north) as D 
+where not exists 
+(select latitude 
+from north 
+except select distinct latitude 
+from (incidencia_info natural join north) 
+where email = d.email 
+and ts >= '2019-01-01 00:00:00' 
+and ts <= '2019-12-31 23:59:59'); 
 
-	select I.email from incidencia_info as I 
-	where not exists (
-		select N.latitude, N.longitude from north as N 
-		except select latitude, longitude from incidencia_info natural join north 
-		where I.latitude = latitude and I.longitude = longitude and I.ts >= 1.1.2019 00:00 and I.ts <= 31.12.2019 23:59)
 
-
-4. with correction as select * from utilizador_qualificado natural join proposta_de_correcao natural join correcao
-   with south_anomalies as select * from local_publico as L natural join item natural join natural join anomalia where L.latitude < 39.336775
-
-	select C.email from correction as C, south_anomalies as S
-	where C.email = S.email and S.ts > 1.1.2019 00:00 and S.ts < 31.12.2019 23:59 
-	group by C.email
-	having count (distinct C.anomalia_id) < count (distinct S.anomalia_id)
+4. with south_corrections 
+as (select * 
+	from (proposta_de_correcao natural join correcao) as C 
+	natural join incidencia as I, item as B 
+	where I.item_id = B.id 
+	and latitude < 39.336775), 
+south_anomalies 
+as (select * 
+	from local_publico as L, 
+	anomalia as A, incidencia as I, item as B 
+	where A.id = I.anomalia_id 
+	and B.id = I.item_id 
+	and B.latitude = L.latitude 
+	and L.longitude = B.longitude 
+	and L.latitude < 39.336775) 
+select C.email 
+from south_corrections as C, south_anomalies as S 
+where S.email = C.email 
+and S.ts > '2019-01-01 00:00:00' 
+and S.ts < '2019-12-31 23:59:59' 
+group by C.email 
+having count(distinct C.anomalia_id) < count(distinct S.anomalia_id);
