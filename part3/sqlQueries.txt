@@ -7,9 +7,21 @@ select latitude, longitude, nome
 from local_anomalia_count
 where anomalia_count = (select MAX(anomalia_count) from local_anomalia_count);
 
-2. select U.email from utilizador_regular as U natural join incidencia natural join anomalia as A, anomalia_traducao as T
-	where A.ts >= 1.1.2019 00:00 and A.ts <= 30.6.2019 23h59 and A.id = T.id group by U.email having count(T.id) >=
-	all(select count(T.id) from utilizador_regular natural join incidencia natural join anomalia as A, anomalia_traducao as T where A.ts >= 1.1.2019 00:00 and A.ts <= 30.6.2019 23h59 and A.id = T.id group by U.email )
+2. select I.email 
+	    from (utilizador_regular natural join incidencia) as I, anomalia as A
+		where I.anomalia_id = A.id 
+		and A.tem_anomalia_redacao=False 
+		and A.ts >= '2019-01-01 00:00:00' 
+		and A.ts <= '2019-06-30 23:59:59' 
+		group by email 
+		having count(distinct A.id) >= 
+		all(select count(distinct A.id) 
+		from (utilizador_regular natural join incidencia) as I, anomalia as A 
+		where I.anomalia_id = A.id 
+		and A.tem_anomalia_redacao=False 
+		and A.ts >= '2019-01-01 00:00:00' 
+		and A.ts <= '2019-06-30 23:59:59' 
+		group by email)
 
 
 3. with north as select * from local_publico where latitude > 39.336775
