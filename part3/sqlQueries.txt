@@ -1,30 +1,30 @@
-1. with local_anomalia_count(latitude, longitude, nome, anomalia_count)
-   as (select L.latitude, L.longitude, L.nome, COUNT(*)
-       from (local_publico natural join item) as L, incidencia as I
-       where L.id = I.item_id
-       group by (latitude, longitude))
-select latitude, longitude, nome
+1.
+with local_anomalia_count(latitude, longitude, nome, anomalia_count)
+as (select L.latitude, L.longitude, L.nome, COUNT(*)
+    from (local_publico natural join item) as L, incidencia as I
+    where L.id = I.item_id
+    group by (latitude, longitude))
+ect latitude, longitude, nome
 from local_anomalia_count
 where anomalia_count = (select MAX(anomalia_count) from local_anomalia_count);
 
-2. select I.email 
-	    from (utilizador_regular natural join incidencia) as I, anomalia as A
-		where I.anomalia_id = A.id 
-		and A.tem_anomalia_redacao=False 
-		and A.ts >= '2019-01-01 00:00:00' 
-		and A.ts <= '2019-06-30 23:59:59' 
-		group by email 
-		having count(distinct A.id) >= 
-   all(select count(distinct A.id) 
-		from (utilizador_regular natural join incidencia) as I, anomalia as A 
-		where I.anomalia_id = A.id 
-		and A.tem_anomalia_redacao=False 
-		and A.ts >= '2019-01-01 00:00:00' 
-		and A.ts <= '2019-06-30 23:59:59' 
-		group by email)
+
+2.
+with utilizador_regular_tmp(email, anomalia_count)
+     as (select I.email, COUNT(A.id)
+         from (utilizador_regular natural join incidencia) as I, anomalia A
+         where I.anomalia_id = A.id
+               and A.tem_anomalia_redacao = false
+               and TIMESTAMP '2019-01-01' <= A.ts
+               and A.ts < TIMESTAMP '2019-07-01'
+         group by I.email)
+select email
+from utilizador_regular_tmp
+where anomalia_count = (select MAX(anomalia_count) from utilizador_regular_tmp);
 
 
-3. with north 
+3.
+with north 
 as (select * 
 	from local_publico where latitude > 39.336775), 
 incidencia_info 
@@ -44,7 +44,8 @@ and ts >= '2019-01-01 00:00:00'
 and ts <= '2019-12-31 23:59:59'); 
 
 
-4. with south_corrections 
+4.
+with south_corrections 
 as (select * 
 	from (proposta_de_correcao natural join correcao) as C 
 	natural join incidencia as I, item as B 
