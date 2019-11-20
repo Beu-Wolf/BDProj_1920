@@ -26,7 +26,7 @@ create table item (
     latitude       numeric(8, 6) not null,
     longitude      numeric(9, 6) not null,
     constraint fk_item_local_publico foreign key(latitude, longitude)
-               references local_publico(latitude, longitude),
+               references local_publico(latitude, longitude) on delete cascade,
     constraint pk_item primary key(id)
 );
 
@@ -47,7 +47,7 @@ create table anomalia_traducao (
     lingua2        varchar(255) not null,
     constraint pk_anomalia_traducao primary key(id),
     constraint fk_anomalia_traducao_anomalia foreign key(id)
-                references anomalia(id)
+                references anomalia(id) on delete cascade
 );
 
 -- TODO: how to apply RI-1 and RI-2?? Maybe this way?
@@ -62,9 +62,9 @@ create table duplicado (
     item2          integer not null,
     constraint pk_duplicado primary key(item1, item2),
     constraint fk_duplicado_item foreign key(item1) 
-                references item(id),
+                references item(id) on delete cascade,
     constraint fk_duplicado_item2 foreign key(item2) 
-                references item(id),                    --neds to be like this, because it's different instances of an item.id
+                references item(id) on delete cascade,                    --neds to be like this, because it's different instances of an item.id
     check(item1 < item2)
 );
 
@@ -101,9 +101,9 @@ create table incidencia (
     email              varchar(255) not null,
     constraint pk_incidencia primary key(anomalia_id),
     constraint fk_incidencia_anomalia foreign key(anomalia_id)
-                references anomalia(id),
+                references anomalia(id) on delete cascade,
     constraint fk_incidencia_item foreign key(item_id)
-                references item(id),
+                references item(id) on delete cascade,
     constraint fk_incidencia_utilizador foreign key(email)
                 references utilizador(email)
 );
@@ -125,9 +125,9 @@ create table correcao (
     anomalia_id        integer not null,
     constraint pk_correcao primary key(email, nro, anomalia_id),
     constraint fk_correcao_proposta foreign key(email, nro)
-                references proposta_de_correcao(email, nro),
+                references proposta_de_correcao(email, nro) on delete cascade,
     constraint fk_correcao_incidencia foreign key(anomalia_id)
-                references incidencia(anomalia_id)
+                references incidencia(anomalia_id) on delete cascade
 );
 
 
