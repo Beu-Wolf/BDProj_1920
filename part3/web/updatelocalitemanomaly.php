@@ -26,8 +26,14 @@
                 if($action == "Remover") {
                     $sql = "DELETE FROM local_publico WHERE latitude = :latitude AND longitude = :longitude;";
 
+                    $result = $db->prepare($sql);
+                    $result->execute([':latitude' => $latitude, ':longitude' => $longitude]);
+                    echo("<p>Successfully removed location</p>");
                 } else if($action == "Inserir") {
-
+                    $sql = "INSERT INTO local_publico (latitude, longitude, nome) VALUES (:latitude, :longitude, :nome);";
+                    $result = $db->prepare($sql);
+                    $result->execute([':latitude' => $latitude, ':longitude' => $longitude, ':nome' => $local]);
+                    echo("<p>Successfully added location</p>");
                 }
 
 
@@ -37,8 +43,7 @@
              * TODO: Add item and anomaly
             */
             
-            $result = $db->prepare($sql);
-            $result->execute([':latitude' => $latitude, ':longitude' => $longitude]);
+            
 
             $db->commit();
             $db = null;
