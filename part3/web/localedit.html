@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<head>
+    <title>Local</title>
+</head>
+<body>
+    <h3>Inserir ou remover local</h3>
+    <form action="updatelocalitemanomaly.php" method="post">
+        <p><input type="hidden" name="type" value="local"></p>
+        <p><input type="number" step="0.000001" name="latitude">Latitude: </p>
+        <p><input type="number" step="0.000001" name="longitude">Longitude: </p>
+        <p>Nome do Local: <input type="text" name="local"></p>
+        <p><input type="radio" name="action" value="Inserir">Inserir</p>
+        <p><input type="radio" name="action" value="Remover">Remover</p>
+        <p><input type="submit" value="Submit"></p>
+    </form>
+    <a href="localitemanomalyedit.html">Voltar</a>
+</body>
