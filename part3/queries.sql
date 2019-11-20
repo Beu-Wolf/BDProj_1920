@@ -32,8 +32,7 @@ with norte_rio_maior as (select * from local_publico
                 (item natural join local_publico) as LP
            where I.item_id = LP.id
                  and I.anomalia_id = A.id
-                 and TIMESTAMP '2019-01-01' <= A.ts
-                 and A.ts < TIMESTAMP '2020-01-01')
+                 and extract(year from A.ts) = 2019)
 select distinct email
 from utilizador_local U1
 where not exists (select latitude, longitude from norte_rio_maior
