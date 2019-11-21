@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<head>
+    <title>Item</title>
+</head>
+<body>
+    <form action="updatelocalitemanomaly.php" method="post">
+        <p><input type="hidden" name="type" value="item"></p>
+        <p>id: <input type="number" name="id" required></p>
+        <p>Descrição: <input type="text" name="descricao" required></p>
+        <p>Localização: <input type="text" name="localizacao" required></p>
+        <p>Latitude: <input type="number" step="0.000001" name="latitude" required></p>
+        <p>Longitude: <input type="number" step="0.000001" name="longitude" required></p>
+        <p><input type="hidden" name="action" value="Inserir"></p>
+        <p><input type="submit" value="Submit"></p>
+    </form>
+    <a href="itemedit.html">Voltar</a>
+</body>
