@@ -2,14 +2,9 @@
 <body>
     <h3>Users</h3>
     <?php
+        require "db.php";
         try {
-            $host = "localhost";
-            $user = getenv("POSTGRES_USER");
-            $password = getenv("POSTGRES_PASS");
-            $dbname = "translateRight";
-
-            $db = new PDO("pgsql:host=$host;dbname=$dbname", $user, $password);
-            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $db = connect_db();
 
             $sql = "SELECT email, password FROM utilizador;";
 
