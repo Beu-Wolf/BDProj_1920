@@ -12,11 +12,17 @@
 
             if ($_SERVER["REQUEST_METHOD"] == 'POST') {
 
+                $db->beginTransaction();
+
                 $sql = "DELETE FROM anomalia WHERE id = :id";
                 $result = $db->prepare($sql);
-                $result->execute([':id' => $_POST["id"]]);
-
-                echo("<p>Anomalia {$_POST["id"]} removida!</p>");
+                if($result->execute([':id' => $_POST["id"]])) {
+                    echo("<p>Anomalia {$_POST["id"]} removida!</p>");
+                    $db->commit();
+                } else {
+                    echo("<p>Erro a remover anomalia!</p>");
+                    $db->rollBack();
+                }
             }
 
             $sql = "SELECT id, ts FROM anomalia;";
@@ -44,5 +50,6 @@
             echo("<p>ERROR: {$e->getMessage()}</p>");
         }
     ?>
+    <a href="index.html">Voltar</a>
     </body>
 </html>
