@@ -20,7 +20,7 @@ create table local_publico (
 );
 
 create table item (
-    id             integer not null,
+    id             serial,
     descricao      varchar(255) not null,
     localizacao    varchar(255) not null,    -- not sure about the type
     latitude       numeric(8, 6) not null,
@@ -31,7 +31,7 @@ create table item (
 );
 
 create table anomalia (
-    id             integer not null,
+    id             serial,
     zona           box not null,
     imagem         bytea not null,
     lingua         varchar(255) not null,

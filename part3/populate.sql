@@ -14,14 +14,14 @@ insert into local_publico values(31.034113, -7.927548, 'Centro de Faro');
 -- 1 em todos os locais, exceto Lisboa, Coimbra e Faro que tem 2  --
 --------------------------------------------------------------------
 
-insert into item values(1, 'Item_RioMaior', 'Cafe do Abilio', 39.336775, -8.936379);
-insert into item values(2, 'Item_Coimbra_1', 'Estadio Academica porta 1', 40.203314, -8.410257);
-insert into item values(3, 'Item_Coimbra_2', 'Estadio Academica porta 1', 40.203314, -8.410257); --Item duplicado
-insert into item values(4, 'Item_Famalicão', 'Restaurante Ze do Pipo', 41.413055, -8.512330);
-insert into item values(5, 'Item_Lisboa_1', 'Cafe do Cais do Sodre', 38.728573, -9.137904);
-insert into item values(6, 'Item_Faro_1', 'Centro Comercial Faro', 31.034113, -7.927548);
-insert into item values(7, 'Item_Lisboa_2', 'Cafe do Cais', 38.728573, -9.137904);
-insert into item values(8, 'Item_Faro_2', 'Praça de Faro', 31.034113, -7.927548);
+insert into item (descricao, localizacao, latitude, longitude) values('Item_RioMaior', 'Cafe do Abilio', 39.336775, -8.936379);
+insert into item (descricao, localizacao, latitude, longitude) values('Item_Coimbra_1', 'Estadio Academica porta 1', 40.203314, -8.410257);
+insert into item (descricao, localizacao, latitude, longitude) values('Item_Coimbra_2', 'Estadio Academica porta 1', 40.203314, -8.410257); --Item duplicado
+insert into item (descricao, localizacao, latitude, longitude) values('Item_Famalicão', 'Restaurante Ze do Pipo', 41.413055, -8.512330);
+insert into item (descricao, localizacao, latitude, longitude) values('Item_Lisboa_1', 'Cafe do Cais do Sodre', 38.728573, -9.137904);
+insert into item (descricao, localizacao, latitude, longitude) values('Item_Faro_1', 'Centro Comercial Faro', 31.034113, -7.927548);
+insert into item (descricao, localizacao, latitude, longitude) values('Item_Lisboa_2', 'Cafe do Cais', 38.728573, -9.137904);
+insert into item (descricao, localizacao, latitude, longitude) values('Item_Faro_2', 'Praça de Faro', 31.034113, -7.927548);
 
 --------------------------------------------------------------------
 --                          ANOMALIA                              --
@@ -33,21 +33,21 @@ insert into item values(8, 'Item_Faro_2', 'Praça de Faro', 31.034113, -7.927548
 --------------------------------------------------------------------
 
 -- Lisboa
-insert into anomalia values (1, '(0,0),(1,1)', '\xF07001', 'Portugues', '2019-04-23 19:59:00', 'Mau pronome', false);
-insert into anomalia values(2, '(0,0),(1,1)','\xF07002', 'Ingles', '2019-09-23 00:00:00', 'Mau adjetivo', false);
-insert into anomalia values(3, '(4,4),(5,5)','\xF07003', 'Frances', '2019-01-23 03:59:00', 'Mau verbo', true);
+insert into anomalia (zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) values('(0,0),(1,1)', '\xF07001', 'Portugues', '2019-04-23 19:59:00', 'Mau pronome', false);
+insert into anomalia (zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) values('(0,0),(1,1)','\xF07002', 'Ingles', '2019-09-23 00:00:00', 'Mau adjetivo', false);
+insert into anomalia (zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) values('(4,4),(5,5)','\xF07003', 'Frances', '2019-01-23 03:59:00', 'Mau verbo', true);
 --Coimbra 
-insert into anomalia values(4, '(0,0),(1,1)','\xF07004', 'Grego', '2019-04-23 19:59:00', 'Mau nome', false);
-insert into anomalia values(5, '(0,0),(1,1)','\xF07004', 'Grego', '2019-04-23 19:59:00', 'Mau nome', false); -- Para item duplicado
-insert into anomalia values(6, '(4,4),(5,5)','\xF07005', 'Frances', '2019-04-23 19:59:00', 'Mau acento', true);
+insert into anomalia (zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) values('(0,0),(1,1)','\xF07004', 'Grego', '2019-04-23 19:59:00', 'Mau nome', false);
+insert into anomalia (zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) values('(0,0),(1,1)','\xF07004', 'Grego', '2019-04-23 19:59:00', 'Mau nome', false); -- Para item duplicado
+insert into anomalia (zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) values('(4,4),(5,5)','\xF07005', 'Frances', '2019-04-23 19:59:00', 'Mau acento', true);
 --Faro
-insert into anomalia values(7, '(0,0),(1,1)','\xF07006', 'Espanhol', '2019-07-23 19:59:00', 'Mau uso de maiscula', false);
-insert into anomalia values(8, '(2,2),(3,3)','\xF07007', 'Italiano', '2019-02-23 00:00:00', 'Ma frase', false);
-insert into anomalia values(9, '(4,4),(5,5)','\xF07008', 'Portugues', '2019-11-23 03:59:00', 'Mau nome', true);
+insert into anomalia (zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) values('(0,0),(1,1)','\xF07006', 'Espanhol', '2019-07-23 19:59:00', 'Mau uso de maiscula', false);
+insert into anomalia (zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) values('(2,2),(3,3)','\xF07007', 'Italiano', '2019-02-23 00:00:00', 'Ma frase', false);
+insert into anomalia (zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) values('(4,4),(5,5)','\xF07008', 'Portugues', '2019-11-23 03:59:00', 'Mau nome', true);
 --Famalicao
-insert into anomalia values(10, '(0,0),(1,1)','\xF07009', 'Romeno', '2019-05-23 19:59:00', 'Mau uso de maiscula', false);
+insert into anomalia (zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) values('(0,0),(1,1)','\xF07009', 'Romeno', '2019-05-23 19:59:00', 'Mau uso de maiscula', false);
 --Rio Maio
-insert into anomalia values(11, '(0,0),(1,1)','\xF07010', 'Sueco', '2019-08-23 19:59:00', 'Mau uso de adverbio', true);
+insert into anomalia (zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) values('(0,0),(1,1)','\xF07010', 'Sueco', '2019-08-23 19:59:00', 'Mau uso de adverbio', true);
 
 --------------------------------------------------------------------
 --                     ANOMALIA TRADUCAO                          --
