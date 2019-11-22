@@ -18,7 +18,7 @@
                 $result->execute([':id' => $_POST["id"]]);
                 $db->commit();
 
-                echo("<p>Anomalia {$_POST["id"]} removida!</p>");
+                echo("<p>Item {$_POST["id"]} removido!</p>");
             }
 
             $sql = "SELECT id, descricao FROM item;";
