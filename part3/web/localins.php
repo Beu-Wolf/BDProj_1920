@@ -26,21 +26,23 @@
                     $db->commit();
                     $db = null;
                 }
-                
-                echo("<form action=\"\" method=\"post\">");
-                echo("<p>Latitude: <input type=\"number\" step=\"0.000001\" name=\"latitude\" required></p>");
-                echo("<p>Longitude: <input type=\"number\" step=\"0.000001\" name=\"longitude\" required></p>");
-                echo("<p>Nome do local: <input type=\"text\" name=\"local\" required></p>");
-                echo("<p><input type=\"submit\" value=\"Submit\"></p>");
-                echo('</form>');
-                
-                
-
             } catch (PDOException $e) {
+                $msg = $e->getMessage();
+
+                if(strstr($msg, "already exists")) {
+                    echo("<p>There already is a location at ({$latitude}, {$longitude})</p>");
+                }
+
                 $db->rollback();
-                echo("<p>ERROR: {$e->getMessage()}</p>");
+                echo("<p>ERROR: {$msg}</p>");
             }
         ?>
+        <form action="" method="post">
+            <p>Latitude: <input type="number" step="0.000001" name="latitude" required></p>
+            <p>Longitude: <input type="number" step="0.000001" name="longitude" required></p>
+            <p>Nome do local: <input type="text" name="local" required></p>
+            <p><input type="submit" value="Submit"></p>
+        </form>
         <a href="index.html">Voltar</a>
     </body>
 </html>
