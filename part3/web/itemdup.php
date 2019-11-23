@@ -41,9 +41,9 @@
                 } catch(PDOException $e) {
                     $msg = $e->getMessage();
                     if (strstr($msg, "already exists")) {
-                        echo("<p>Duplicado ({$i1},{$i2}) ja existe!</p>");
+                        echo("<p>Duplicado ({$i1},{$i2}) já existe!</p>");
                     } else if ($i1 == $i2) {
-                        echo("<p>Item nao pode ser duplicado de si proprio!</p>");
+                        echo("<p>Item não pode ser duplicado de si próprio!</p>");
                     } else {
                         echo("<p>Erro a registar duplicado!</p>");
                     }
