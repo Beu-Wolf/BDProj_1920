@@ -31,10 +31,13 @@
 
                 if(strstr($msg, "already exists")) {
                     echo("<p>There already is a location at ({$latitude}, {$longitude})</p>");
+                } else if (strstr($msg, "latitude_check")) {
+                    echo("<p>Latitude must be between -90 and 90</p>");
+                } else if(strstr($msg, "longitude_check")) {
+                    echo("<p>Longitude must be between -180 and 180</p>");
                 }
 
                 $db->rollback();
-                echo("<p>ERROR: {$msg}</p>");
             }
         ?>
         <form action="" method="post">
