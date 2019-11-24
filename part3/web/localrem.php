@@ -28,15 +28,12 @@
             $result->execute();
 
             echo("<table>\n");
+            echo('<th></th>');
             echo('<th scope="col">Latitude</th>');
             echo('<th scope="col">Longitude</th>');
             echo('<th scope="col">Nome</th>');
-            echo('<th></th>');
             foreach($result as $row) {
                 echo("<tr>\n");
-                echo("<td>{$row['latitude']}</td>\n");
-                echo("<td>{$row['longitude']}</td>\n");
-                echo("<td>{$row['nome']}</td>\n");
                 echo("<td>");
                 echo("<form action=\"\" method=\"POST\">");
                 echo("<input type=\"hidden\" name=\"latitude\" value=\"{$row['latitude']}\">");
@@ -45,6 +42,9 @@
                 echo("<input type=\"submit\" value=\"Remover\">");
                 echo('</form>');
                 echo("</td>");
+                echo("<td>{$row['latitude']}</td>\n");
+                echo("<td>{$row['longitude']}</td>\n");
+                echo("<td>{$row['nome']}</td>\n");
                 echo("</tr>\n");
             }
             echo("</table>");
@@ -53,6 +53,7 @@
             echo("<p>ERROR: {$e->getMessage()}</p>");
         }
     ?>
+    <br>
     <a href="index.html">Voltar</a>
     </body>
 </html>

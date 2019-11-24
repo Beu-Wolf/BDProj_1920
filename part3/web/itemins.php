@@ -65,14 +65,16 @@
             echo('<th></th>');
             # the user doesn't really care about the coordinates. How can we hide them?
             echo('<th scope="col">Local</th>');
-            echo('<th scope="col">Coordenadas (lat, lon)</th>');
+            echo('<th scope="col">Latitude</th>');
+            echo('<th scope="col">Longitude</th>');
             foreach($xLocations as $row) {
                 echo("<tr>\n");
                 echo("<td>");
                 echo("<input type=\"radio\" name=\"coords\" value=\"lat={$row['latitude']}&lon={$row['longitude']}\" required>");
                 echo("</td>");
                 echo("<td>{$row['nome']}</td>\n");
-                echo("<td>({$row['latitude']}, {$row['longitude']})</td>\n");
+                echo("<td>{$row['latitude']}</td>\n");
+                echo("<td>{$row['longitude']}</td>\n");
                 echo("</tr>\n");
             }
             echo("</table>");
