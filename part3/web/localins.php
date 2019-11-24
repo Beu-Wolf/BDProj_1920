@@ -11,10 +11,10 @@
                 if($_SERVER["REQUEST_METHOD"] == 'POST') {
 
                     $db = connect_db();
-                    $latitude = $_REQUEST['latitude'];
-                    $longitude = $_REQUEST['longitude'];
+                    $latitude = $_POST['latitude'];
+                    $longitude = $_POST['longitude'];
 
-                    $local = $_REQUEST['local'];
+                    $local = $_POST['local'];
 
                     $db->beginTransaction();
 

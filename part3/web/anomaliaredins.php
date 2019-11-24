@@ -10,12 +10,12 @@
 
                 $db = connect_db();
                 
-                $id = $_REQUEST['id'];
-                $zona = $_REQUEST['zona'];
-                $imagem = $_REQUEST['imagem'];
-                $lingua = $_REQUEST['lingua'];
-                $ts = $_REQUEST['ts'];
-                $descricao = $_REQUEST['descricao'];
+                $id = $_POST['id'];
+                $zona = $_POST['zona'];
+                $imagem = $_POST['imagem'];
+                $lingua = $_POST['lingua'];
+                $ts = $_POST['ts'];
+                $descricao = $_POST['descricao'];
               
                 try {
                     $db->beginTransaction();

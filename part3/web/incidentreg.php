@@ -16,9 +16,9 @@
                 if($_SERVER["REQUEST_METHOD"] == 'POST') {
                     
 
-                    $anomalia = $_REQUEST['anomalia'];
-                    $item = $_REQUEST['item'];
-                    $email = $_REQUEST['email'];
+                    $anomalia = $_POST['anomalia'];
+                    $item = $_POST['item'];
+                    $email = $_POST['email'];
 
                     $db->beginTransaction();
 
