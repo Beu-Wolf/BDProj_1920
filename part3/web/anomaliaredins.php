@@ -10,7 +10,6 @@
 
                 $db = connect_db();
                 
-                $id = $_POST['id'];
                 $zona = $_POST['zona'];
                 $imagem = $_POST['imagem'];
                 $lingua = $_POST['lingua'];
@@ -20,10 +19,10 @@
                 try {
                     $db->beginTransaction();
                 
-                    $sql = "INSERT INTO anomalia(id, zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) VALUES (:id, :zona, :imagem, :lingua, :ts, :descricao, False);";
+                    $sql = "INSERT INTO anomalia(zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) VALUES (:zona, :imagem, :lingua, :ts, :descricao, False);";
                     
                     $result = $db->prepare($sql);
-                    $ret = $result->execute([':id' => $id, ':zona' => $zona, ':imagem' => $imagem, ':lingua' => $lingua, ':ts' => $ts, ':descricao' => $descricao]);
+                    $ret = $result->execute([':zona' => $zona, ':imagem' => $imagem, ':lingua' => $lingua, ':ts' => $ts, ':descricao' => $descricao]);
                     
                     if($ret) {
                         echo("<p>Successfully added anomalia</p>");
@@ -34,12 +33,7 @@
                     }
 
                 } catch(PDOException $e) {
-                    $msg = $e->getMessage();
-                    
-                    if(strstr($msg, "already exists")) {
-                        echo("<p>Anomalia {$id} already exists</p>");
-                    }
-                    
+                    echo("<p>ERROR; {$e->getMessage()}</p>");
                     $db->rollback();
                 }
                 
@@ -52,7 +46,6 @@
     
     ?>
     <form action="" method="post">
-        <p>id: <input type="number" name="id" required></p>
         <p>Zona1: <input type="text" name="zona" required></p>
         <p>Imagem: <input type="text" name="imagem" required></p>
         <p>Lingua: <input type="text" name="lingua" required></p>
