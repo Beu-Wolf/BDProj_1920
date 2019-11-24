@@ -30,7 +30,7 @@
                         $db->commit();
                     } else {
                         echo("<p>Error inserting anomaly");
-                        $db->rollbak();
+                        $db->rollback();
                     }
 
                 } catch(PDOException $e) {
@@ -42,11 +42,8 @@
                     
                     $db->rollback();
                 }
-               
-                
                 
                 $db = null;
-            
             }
 
         } catch (PDOException $e) {
