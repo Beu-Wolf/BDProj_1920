@@ -21,7 +21,7 @@
                     $sql = "INSERT INTO local_publico (latitude, longitude, nome) VALUES (:latitude, :longitude, :nome);";
                     $result = $db->prepare($sql);
                     $result->execute([':latitude' => $latitude, ':longitude' => $longitude, ':nome' => $local]);
-                    echo("<p>Successfully added location</p>");
+                    echo("<p>Local inserido!</p>");
 
                     $db->commit();
                     $db = null;
@@ -30,11 +30,11 @@
                 $msg = $e->getMessage();
 
                 if(strstr($msg, "already exists")) {
-                    echo("<p>There already is a location at ({$latitude}, {$longitude})</p>");
+                    echo("<p>Já existe um local em ({$latitude}, {$longitude})</p>");
                 } else if (strstr($msg, "latitude_check")) {
-                    echo("<p>Latitude must be between -90 and 90</p>");
+                    echo("<p>Latitude tem de estar entre -90 and 90</p>");
                 } else if(strstr($msg, "longitude_check")) {
-                    echo("<p>Longitude must be between -180 and 180</p>");
+                    echo("<p>Longitude tem de estar entre -180 and 180</p>");
                 }
 
                 $db->rollback();

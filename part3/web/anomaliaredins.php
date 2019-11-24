@@ -25,10 +25,10 @@
                     $ret = $result->execute([':zona' => $zona, ':imagem' => $imagem, ':lingua' => $lingua, ':ts' => $ts, ':descricao' => $descricao]);
                     
                     if($ret) {
-                        echo("<p>Successfully added anomalia</p>");
+                        echo("<p>Anomalia inserida!</p>");
                         $db->commit();
                     } else {
-                        echo("<p>Error inserting anomaly");
+                        echo("<p>Erro a inserir anomalia!</p>");
                         $db->rollback();
                     }
 
@@ -49,7 +49,7 @@
         <p>Zona1: <input type="text" name="zona" required></p>
         <p>Imagem: <input type="text" name="imagem" required></p>
         <p>Lingua: <input type="text" name="lingua" required></p>
-        <p>TS: <input type="datetime-local" name="ts" required></p>
+        <p>Timestamp: <input type="datetime-local" name="ts" required></p>
         <p>Descrição: <input type="text" name="descricao" required></p>
         <p><input type="submit" value="Submit"></p>
     </form>
