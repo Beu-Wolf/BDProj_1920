@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Registar Incidencia</title>
+        <title>Registar Incidência</title>
     </head>
     <body>
 
-        <h2>Registar Incidencia:</h2>
+        <h2>Registar Incidência:</h2>
         <?php
         require 'db.php';
 
@@ -27,7 +27,7 @@
 
                     $result->execute([':anomalia' => $anomalia, ':item' => $item, ':email' => $email]);
 
-                    echo("<p>Successfully added incident</p>");
+                    echo("<p>Incidência inserida!</p>");
                     $db->commit();
 
                 }
@@ -36,13 +36,13 @@
                 $msg = $e->getMessage();
 
                 if(strstr($msg, "duplicate key")) {
-                    echo("<p>anomalia {$anomalia} already registered in an incident</p>");
+                    echo("<p>Anomalia {$anomalia} já registada numa incidência!</p>");
                 } else if(strstr($msg, "not present in table \"anomalia\"")) {
-                    echo("<p>anomalia {$anomalia} doesn't exist</p>");
+                    echo("<p>Anomalia {$anomalia} não existe!</p>");
                 } else if(strstr($msg, "not present in table \"item\"")) {
-                    echo("<p>item {$item} doesn't exist</p>");
+                    echo("<p>Item {$item} não existe!</p>");
                 } else if(strstr($msg, "not present in table \"utilizador\"")) {
-                    echo("<p>user {$email} doesn't exist</p>");
+                    echo("<p>Utilizador {$email} não existe!</p>");
                 }
 
                 $db->rollback();
@@ -88,6 +88,7 @@
             echo('<th scope="col">ID</th>');
             echo('<th scope="col">Descrição</th>');
             echo('<th scope="col">Latitude</th>');
+            echo('<th scope="col">Longitude</th>');
 
            
             foreach($result as $row) {

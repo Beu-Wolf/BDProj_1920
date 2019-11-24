@@ -20,7 +20,7 @@
 
                 $db->commit();
 
-                echo("<p>Local {$_POST["nome"]} removido!</p>");
+                echo("<p>Local \"{$_POST["nome"]}\" removido!</p>");
             }
 
             $sql = "SELECT latitude, longitude, nome FROM local_publico;";

@@ -10,7 +10,6 @@
 
                 $db = connect_db();
                 
-                $id = $_POST['id'];
                 $zona = $_POST['zona'];
                 $imagem = $_POST['imagem'];
                 $lingua = $_POST['lingua'];
@@ -22,10 +21,11 @@
                 try {
                     $db->beginTransaction();
                 
-                    $sql = "INSERT INTO anomalia(id, zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) VALUES (:id, :zona, :imagem, :lingua, :ts, :descricao, True);";
+                    $sql = "INSERT INTO anomalia(zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) VALUES (:zona, :imagem, :lingua, :ts, :descricao, False) RETURNING id;";
                     
                     $result = $db->prepare($sql);
-                    $ret = $result->execute([':id' => $id, ':zona' => $zona, ':imagem' => $imagem, ':lingua' => $lingua, ':ts' => $ts, ':descricao' => $descricao]);
+                    $ret = $result->execute([':zona' => $zona, ':imagem' => $imagem, ':lingua' => $lingua, ':ts' => $ts, ':descricao' => $descricao]);
+                    $id = $result->fetchAll()[0]['id'];
                     
                     $sql = "INSERT INTO anomalia_traducao(id, zona2, lingua2) VALUES(:id, :zona2, :lingua2);";
                     
@@ -34,26 +34,19 @@
 
 
                     if($ret and $ret2) {
-                        echo("<p>Successfully added anomalia</p>");
+                        echo("<p>Anomalia inserida!</p>");
                         $db->commit();
                     } else {
-                        echo("<p>Error inserting anomaly</p>");
-                        $db->rollbak();
+                        echo("<p>Erro a inserir anomalia!</p>");
+                        $db->rollback();
                     }
 
                 } catch(PDOException $e) {
-                    $msg = $e->getMessage();
-                    
-                    if(strstr($msg, "already exists")) {
-                        echo("<p>Anomalia {$id} already exists</p>");
-                    }
-                    
+                    echo("<p>ERROR; {$e->getMessage()}</p>");
                     $db->rollback();
                 }
                 
-                
                 $db = null;
-            
             }
 
         } catch (PDOException $e) {
@@ -63,11 +56,10 @@
 
 
     <form action="" method="post">
-        <p>id: <input type="number" name="id" required></p>
         <p>Zona1: <input type="text" name="zona" required></p>
         <p>Imagem: <input type="text" name="imagem" required></p>
         <p>Lingua: <input type="text" name="lingua" required></p>
-        <p>TS: <input type="datetime-local" name="ts" required></p>
+        <p>Timestamp: <input type="datetime-local" name="ts" required></p>
         <p>Descrição: <input type="text" name="descricao" required></p>
         <p>Zona2: <input type="text" name="zona2" required></p>
         <p>Lingua2: <input type="text" name="lingua2" required></p>
