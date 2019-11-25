@@ -1,0 +1,106 @@
+\documentclass[12pt]{report}
+\usepackage[textwidth=17cm, margin=2cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{amsmath}
+
+\begin{document}
+
+    \begin{titlepage}
+        \begin{center}
+
+            \vspace*{\fill}
+            \Huge
+            \textbf{Projeto de Bases de Dados - Parte 3}
+            
+            \vspace*{\fill}
+
+            \Large
+            \textbf{Grupo 27} \\
+            89427 - Daniel Seara - 33,3\% - 6 horas \\
+            89399 - Afonso Gonçalves - 33,3\% - 6 horas \\
+            89496 - Marcelo Santos - 33,3\% - 6 horas \\
+
+            \bigskip
+            \textbf{Turno:} 4ª Feira 9h30 - Lab 8\\ \textbf{Professor:} Duarte Galvão
+        
+        \end{center}
+    \end{titlepage}
+
+    \Large
+    \textbf{Criação da base de Dados:}\\
+    
+    \normalsize
+    \vspace{2mm}
+
+    Para criar a base de dados, entre num servidor PSQL e execute o comando \textbf{\textbackslash{i}} seguido do ficheiro \textit{schema.sql}.
+    Este comando irá eliminar todas as possíveis referências a tabelas com o mesmo nome no servidor e criará um conjunto de novas tabelas sem dados.
+
+    \vspace*{15mm}
+
+
+    \Large 
+    \textbf{Consultas SQL:}
+
+    \normalsize
+    \vspace{2mm}
+
+    \begin{enumerate}
+        \item  WITH local\_anomalia\_count(latitude, longitude, nome, anomalia\_count)\\
+               AS (SELECT L.latitude, L.longitude, L.nome, COUNT(*) \\
+        \hspace*{1em} FROM (local\_publico NATURAL JOIN item) AS L, incidencia as I \\
+        \hspace*{1em} WHERE L.id = I.item\_id \\
+        \hspace*{1em} GROUP BY (latitude, longitude)) \\
+                SELECT latitude, longitude, nome \\
+                FROM local\_anomalia\_count \\
+                WHERE anomalia\_count = (SELECT MAX(anomalia\_count) FROM local\_anomalia\_count)
+        
+        \item WITH utilizador\_regular\_tmp(email, anomalia\_count) \\
+              AS (SELECT I.email, COUNT(A.id) \\
+              \hspace*{1em} FROM (utilizador\_regular NATURAL JOIN incidencia) AS I, anomalia A \\
+              \hspace*{1em} WHERE I.anomalia\_id = A.id \\
+              \hspace*{1em} AND A.tem\_anomalia\_redacao = false \\
+              \hspace*{1em} AND TIMESTAMP '2019-01-01' <= A.ts \\
+              \hspace*{1em} AND A.ts < TIMESTAMP '2019-07-01' \\
+              \hspace*{1em} GROUP BY I.email) \\
+              SELECT email\\
+              FROM utilizador\_regular\_tmp \\
+              WHERE anomalia\_count = (SELECT MAX(anomalia\_count) FROM utilizador\_regular\_tmp);
+
+        \item WITH norte\_rio\_maior \\
+              AS (SELECT * FROM local\_publico \\
+              \hspace*{1em} WHERE latitude > 39.336775), \\
+              \hspace*{1em} utilizador\_local(email, latitude, longitude) \\
+              \hspace*{1em} AS (SELECT I.email, LP.latitude, LP.longitude \\
+              \hspace*{1em} FROM incidencia AS I, anomalia A, (item NATURAL JOIN local\_publico) AS LP \\
+              \hspace*{1em} WHERE I.item\_id = LP.id \\
+              \hspace*{1em} AND I.anomalia\_id = A.id \\
+              \hspace*{1em} AND extract(year FROM A.ts) = 2019) \\
+              SELECT distinct email \\
+              FROM utilizador\_local U1 \\
+              WHERE NOT EXISTS (SELECT latitude, longitude FROM norte\_rio\_maior\\
+              EXCEPT SELECT latitude, longitude FROM utilizador\_local U2 \\
+              WHERE U1.email = U2.email);
+
+        \item WITH incidencia\_qual\_sul(email, anomalia\_id)\\
+              AS (SELECT I.email, I.anomalia\_id \\
+              FROM (utilizador\_qualificado NATURAL JOIN incidencia) AS I, (item NATURAL JOIN local\_publico) AS LP, anomalia A \\
+              \hspace*{1em} WHERE I.item\_id = LP.id \\
+              \hspace*{1em} AND I.anomalia\_id = A.id \\
+              \hspace*{1em} AND LP.latitude < 39.336775\\
+              \hspace*{1em} AND extract(year FROM A.ts) = extract(year FROM current\_date))\\
+              SELECT distinct U1.email FROM incidencia\_qual\_sul U1 \\
+              WHERE EXISTS (SELECT U2.anomalia\_id \\
+              FROM incidencia\_qual\_sul U2 \\
+              WHERE U2.email = U1.email \\
+              EXCEPT SELECT C.anomalia\_id \\
+              FROM (proposta\_de\_correcao NATURAL JOIN correcao) AS C \\
+              WHERE C.email = U1.email);
+        
+    \end{enumerate}
+
+
+\end{document}
