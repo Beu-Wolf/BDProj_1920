@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Registar Incidencia</title>
+        <title>Registar Incidência</title>
     </head>
     <body>
 
-        <h2>Registar Incidencia:</h2>
+        <h2>Registar Incidência:</h2>
         <?php
         require 'db.php';
 
@@ -27,7 +27,7 @@
 
                     $result->execute([':anomalia' => $anomalia, ':item' => $item, ':email' => $email]);
 
-                    echo("<p>Successfully added incident</p>");
+                    echo("<p>Incidência inserida!</p>");
                     $db->commit();
 
                 }
@@ -36,13 +36,13 @@
                 $msg = $e->getMessage();
 
                 if(strstr($msg, "duplicate key")) {
-                    echo("<p>anomalia {$anomalia} already registered in an incident</p>");
+                    echo("<p>Anomalia {$anomalia} já registada numa incidência!</p>");
                 } else if(strstr($msg, "not present in table \"anomalia\"")) {
-                    echo("<p>anomalia {$anomalia} doesn't exist</p>");
+                    echo("<p>Anomalia {$anomalia} não existe!</p>");
                 } else if(strstr($msg, "not present in table \"item\"")) {
-                    echo("<p>item {$item} doesn't exist</p>");
+                    echo("<p>Item {$item} não existe!</p>");
                 } else if(strstr($msg, "not present in table \"utilizador\"")) {
-                    echo("<p>user {$email} doesn't exist</p>");
+                    echo("<p>Utilizador {$email} não existe!</p>");
                 }
 
                 $db->rollback();
@@ -58,19 +58,19 @@
             echo("<form action=\"\" method=\"POST\">");
 
             echo("<table style=\"border-spacing: 10px;\">\n");
-            echo('<th scope="col">Id</th>');
-            echo('<th scope="col">ts</th>');
-            echo('<th scope="col">descricao</th>');
-            echo('<th scope="col">A adicionar</th>');
+            echo('<th scope="col"></th>');
+            echo('<th scope="col">ID</th>');
+            echo('<th scope="col">Timestamp</th>');
+            echo('<th scope="col">Descrição</th>');
 
             foreach($result as $row) {
                 echo("<tr>\n");
-                echo("<td>{$row['id']}</td>\n");
-                echo("<td>{$row['ts']}</td>\n");
-                echo("<td>{$row['descricao']}</td>\n");
                 echo("<td>");
                 echo("<input type=\"radio\" name=\"anomalia\" value=\"{$row['id']}\" required>");
                 echo("</td>");
+                echo("<td>{$row['id']}</td>\n");
+                echo("<td>{$row['ts']}</td>\n");
+                echo("<td>{$row['descricao']}</td>\n");
                 echo("</tr>\n");
             }
 
@@ -84,22 +84,22 @@
             echo("<h3>Item</h3>\n");
 
             echo("<table style=\"border-spacing: 10px;\">\n");
-            echo('<th scope="col">Id</th>');
-            echo('<th scope="col">Decricao</th>');
+            echo('<th scope="col"></th>');
+            echo('<th scope="col">ID</th>');
+            echo('<th scope="col">Descrição</th>');
             echo('<th scope="col">Latitude</th>');
             echo('<th scope="col">Longitude</th>');
-            echo('<th scope="col">A adicionar</th>');
 
            
             foreach($result as $row) {
                 echo("<tr>\n");
+                echo("<td>");
+                echo("<input type=\"radio\" name=\"item\" value=\"{$row['id']}\" required>");
+                echo("</td>");
                 echo("<td>{$row['id']}</td>\n");
                 echo("<td>{$row['descricao']}</td>\n");
                 echo("<td>{$row['latitude']}</td>\n");
                 echo("<td>{$row['longitude']}</td>\n");
-                echo("<td>");
-                echo("<input type=\"radio\" name=\"item\" value=\"{$row['id']}\" required>");
-                echo("</td>");
                 echo("</tr>\n");
             }
 
@@ -118,7 +118,6 @@
                 echo("{$row['email']}");
                 echo("</option>");
             }
-
             echo("</select>\n");
 
             echo("<p><input type=\"submit\" value=\"Registar\"></p>\n");

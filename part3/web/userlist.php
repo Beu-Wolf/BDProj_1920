@@ -11,7 +11,7 @@
             $result = $db->prepare($sql);
             $result->execute();
 
-            echo("<table border=\"1\" cellspacing=\"7\">\n");
+            echo("<table>\n");
             foreach($result as $row) {
                 echo("<tr>\n");
                 echo("<td>{$row['email']}</td>\n");
@@ -26,6 +26,7 @@
         }
 
     ?>        
+    <br>
     <a href="index.html">Voltar</a>
 </body>
 </html>
