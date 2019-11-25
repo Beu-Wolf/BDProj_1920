@@ -131,28 +131,28 @@ insert into incidencia values(9, 6, 'daniel@grupo23.com');
 ----------------------------------------------------------------------
 
 insert into proposta_de_correcao values('marcelo@xpto.com', 1, '2019-11-30 00:00:00', 'Corrigido');
+insert into proposta_de_correcao values('daniel@grupo23.com', 1, '2019-10-31 23:59:00', 'Correcao');
+insert into proposta_de_correcao values('afonso@cpleic.com', 1, '2019-09-30 11:00:00', 'Corrigido');
+insert into proposta_de_correcao values('marcelo@xpto.com', 2, '2019-11-30 00:00:00', 'Corrigido');
 insert into proposta_de_correcao values('daniel@grupo23.com', 2, '2019-10-31 23:59:00', 'Correcao');
-insert into proposta_de_correcao values('afonso@cpleic.com', 3, '2019-09-30 11:00:00', 'Corrigido');
-insert into proposta_de_correcao values('marcelo@xpto.com', 4, '2019-11-30 00:00:00', 'Corrigido');
-insert into proposta_de_correcao values('daniel@grupo23.com', 5, '2019-10-31 23:59:00', 'Correcao');
-insert into proposta_de_correcao values('afonso@cpleic.com', 6, '2019-09-30 11:00:00', 'Corrigido');
-insert into proposta_de_correcao values('marcelo@xpto.com', 7, '2019-11-30 00:00:00', 'Corrigido');
-insert into proposta_de_correcao values('daniel@grupo23.com', 8, '2019-10-31 23:59:00', 'Correcao');
+insert into proposta_de_correcao values('afonso@cpleic.com', 2, '2019-09-30 11:00:00', 'Corrigido');
+insert into proposta_de_correcao values('marcelo@xpto.com', 3, '2019-11-30 00:00:00', 'Corrigido');
+insert into proposta_de_correcao values('daniel@grupo23.com', 3, '2019-10-31 23:59:00', 'Correcao');
 
 ------------------------------------------------------------------------
 --                           CORRECAO                                 --
 -- Afonso não regista para todas as anomalias dele a sul de Rio Maior --
 ------------------------------------------------------------------------
 
-insert into correcao values('afonso@cpleic.com', 3, 1);
-insert into correcao values('afonso@cpleic.com', 6, 6);
+insert into correcao values('afonso@cpleic.com', 1, 1);
+insert into correcao values('afonso@cpleic.com', 2, 6);
 
 insert into correcao values('marcelo@xpto.com', 1, 7);
-insert into correcao values('marcelo@xpto.com', 4, 2);
-insert into correcao values('marcelo@xpto.com', 7, 11);
+insert into correcao values('marcelo@xpto.com', 2, 2);
+insert into correcao values('marcelo@xpto.com', 3, 11);
 
-insert into correcao values('daniel@grupo23.com', 2, 3);
-insert into correcao values('daniel@grupo23.com', 5, 10);
-insert into correcao values('daniel@grupo23.com', 8, 9);
+insert into correcao values('daniel@grupo23.com', 1, 3);
+insert into correcao values('daniel@grupo23.com', 2, 10);
+insert into correcao values('daniel@grupo23.com', 3, 9);
 
 
