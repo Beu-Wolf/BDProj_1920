@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Editar Proposta de Correção</title>
+        <title>Remover Proposta de Correção</title>
     </head>
     <body>
-        <h2>Editar Proposta de Correção</h2>
+        <h2>Remover Proposta de Correção</h2>
         <?php
             require 'db.php';
 
@@ -15,32 +15,24 @@
                     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $email = $_POST['email'];
                         $nro = $_POST['nro'];
-                        $datetime = urldecode($_POST['datetime']);
-                        $text = $_POST['text'];
 
                         $db->beginTransaction();
-                        $sql = "UPDATE proposta_de_correcao
-                                SET data_hora = :datetime, texto = :text
-                                WHERE email = :email AND nro = :nro;";
+                        $sql = "DELETE from proposta_de_correcao
+                                WHERE email = :email AND nro = :nro";
                         $result = $db->prepare($sql);
-                        $ret = $result->execute([":email" => $email, ":nro" => $nro,
-                                                ":datetime" => $datetime, ":text" => $text]);
+                        $ret = $result->execute([":email" => $email, ":nro" => $nro]);
 
                         if ($ret) {
                             $db->commit();
-                            echo("<p>Proposta de Correção ${nro} de ${email} editada!</p>");
+                            echo("<p>Proposta de Correção ${nro} de ${email} removida!</p>");
                         } else {
                             $db->rollBack();
-                            echo("<p>Erro a editar Proposta de Correção!</p>");
+                            echo("<p>Erro a remover Proposta de Correção!</p>");
                         }
                     }
                 } catch (PDOException $e) {
                     $msg = $e->getMessage();
-                    if (strstr($msg, "invalid input syntax for type timestamp")) {
-                        echo('<p>Formato de data-hora inválido!</p>');
-                    } else {
-                        echo("<p>ERROR: {$msg}</p>");
-                    }
+                    echo("<p>ERROR: {$e->getMessage()}</p>");
                     $db->rollBack();
                 }
 
@@ -68,15 +60,15 @@
                     echo("<input type=\"hidden\" name=\"nro\" value=\"$nro\">");
 
                     echo("<td>");
-                    echo("<input type=\"datetime-local\" name=\"datetime\" value=\"$datetime\">");
+                    echo("$datetime");
                     echo("</td>");
 
                     echo("<td>");
-                    echo("<input type=\"datetime-local\" name=\"text\" value=\"$text\">");
+                    echo("$text");
                     echo("</td>");
 
                     echo("<td>");
-                    echo("<input type=\"submit\" value=\"Guardar\">");
+                    echo("<input type=\"submit\" value=\"Remover\">");
                     echo("</td>");
 
                     echo('</form>');
