@@ -6,6 +6,7 @@
 \usepackage{enumitem}
 \usepackage{multicol}
 \usepackage{amsmath}
+\usepackage{listings}
 
 \begin{document}
 
@@ -36,9 +37,13 @@
     \normalsize
     \vspace{2mm}
 
-    Para criar a base de dados, entre num servidor PSQL e execute o comando \textbf{\textbackslash{i}} seguido do ficheiro \textit{schema.sql}.
-    Este comando irá eliminar todas as possíveis referências a tabelas com o mesmo nome no servidor e criará um conjunto de novas tabelas sem dados.
-
+    Assumindo que se tem um utilizador configurado num servidor PSQL, para criar a base de dados deverá correr os seguintes comandos:
+    \begin{verbatim}
+        $ createdb translateRight
+        $ psql -d translateRight
+        translateRight=# \i schema.sql
+    \end{verbatim}
+    
     \vspace*{15mm}
 
 
@@ -102,5 +107,37 @@
         
     \end{enumerate}
 
+    \vspace*{15mm}
+
+
+    \Large 
+    \textbf{Arquitetura da aplicação PHP:}
+
+    \normalsize
+    \vspace{2mm}
+
+    \hspace*{1em} A aplicação inicia no ficheiro \textit{index.html}, onde se encontram todas as opções possíveis a realizar com a base de dados. Ao clicar em qualquer um dos links,
+    é redirecionado para uma página php que permite executar a ação pretendida. Por exemplo, se o objetivo for eliminar um item, do ficheiro \textit{index.hmtl} é redirecionado para 
+    o ficheiro \textit{itemrem.php} onde estão listados todos os items da base de dados e pode escolher o item a eliminar ao carregar no botão correspondente. Todas as funcionalidades 
+    estão implementadas em ficheiros diferentes, não havendo um "ficheiro único" que realize todas as ações possíveis.\\
+
+    \hspace*{1em} A única funcionalidade que não redireciona para um ficheiro php é a funcionalidade de listar anomalias a (dX, dY) graus de (latitude, longitude), onde se é redirecionado para um ficheiro html (\textit{anomalialatform.html})
+    para se escrever os parâmetros desejados. Depois de preencher o formulário, é redirecionado para o ficheiro \textit{anomaliathreemonth.php}. \\
+
+    \hspace*{1em} ATENCÃO: para se ligar à base de dados, os ficheiros php usam as variáveis de ambiente POSTGRES\_USER e POSTGRES\_PASS, que devem ser definidas pelo host da base de dados. \\
+
+    \hspace*{1em} Qualquer página da aplicação, à exceção do \textit{index.html}, possui um link para se retroceder para a página anterior.\\
+
+    \hspace*{1em} Os ficheiros php desta aplicação seguem a seguinte estrutura:
+    \begin{enumerate}
+        \item ligação à base de dados (usando a função definida no ficheiro \textit{db.php})
+        \item apresentação de tabelas relevantes a executar a ação pretendida (por exemplo apresentar a lista de itens quando se quer registar itens duplicados)
+        \item leitura do input do utilizador, seja por meio do preenchimento de um form (ao inserir anomalias, por exemplo) ou de selecionar uma linha da tabela relevante (para eliminar locais, por exemplo)
+        \item criação de uma query SQL a executar, seguido da sua "preparação" (\textit{\$db->prepare(\$sql))})
+        \item execução do query e apresentação da tabela atualizada, ou de uma mensagem de confirmação
+        
+    \end{enumerate}
+
+    \hspace*{1em} Todas as ações que implicam uma mudança no estado da base de dados são realizadas a partir de transações, para garantir a atomicidade das mesmas. \\
 
 \end{document}
