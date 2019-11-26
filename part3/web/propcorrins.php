@@ -37,12 +37,11 @@
                                                 ":data_hora" => $datetime, ":texto" => $text]);
                         if ($ret) {
                             $db->commit();
+                            echo("<p>Proposta de correção de {$email} inserida!<p>");
                         } else {
                             echo("<p>Erro a inserir proposta de correção!</p>");
                             $db->rollback();
                         }
-
-                        echo("<p>Proposta de correção de {$email} inserida!<p>");
                     }
                 } catch (PDOException $e) {
                     $msg = $e->getMessage();
