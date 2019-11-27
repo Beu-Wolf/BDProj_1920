@@ -17,14 +17,19 @@
                 $descricao = $_POST['descricao'];
                 $zona2 = $_POST['zona2'];
                 $lingua2 = $_POST['lingua2'];
+                if($_POST['red']) {
+                    $hasRed = True;
+                } else {
+                    $hasRed = False;
+                }
               
                 try {
                     $db->beginTransaction();
                 
-                    $sql = "INSERT INTO anomalia(zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) VALUES (:zona, :imagem, :lingua, :ts, :descricao, False) RETURNING id;";
+                    $sql = "INSERT INTO anomalia(zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) VALUES (:zona, :imagem, :lingua, :ts, :descricao, :red) RETURNING id;";
                     
                     $result = $db->prepare($sql);
-                    $ret = $result->execute([':zona' => $zona, ':imagem' => $imagem, ':lingua' => $lingua, ':ts' => $ts, ':descricao' => $descricao]);
+                    $ret = $result->execute([':zona' => $zona, ':imagem' => $imagem, ':lingua' => $lingua, ':ts' => $ts, ':descricao' => $descricao, ':red' => $hasRed]);
                     $id = $result->fetchAll()[0]['id'];
                     
                     $sql = "INSERT INTO anomalia_traducao(id, zona2, lingua2) VALUES(:id, :zona2, :lingua2);";
@@ -60,9 +65,10 @@
         <p>Imagem: <input type="text" name="imagem" required></p>
         <p>Lingua: <input type="text" name="lingua" required></p>
         <p>Timestamp: <input type="datetime-local" name="ts" required></p>
-        <p>Descrição: <input type="text" name="descricao" required></p>
+        <p>Descrição: <input type="text" name="descricao" required ></p>
         <p>Zona2: <input type="text" name="zona2" required></p>
         <p>Lingua2: <input type="text" name="lingua2" required></p>
+        <p>Também de redação? <input type="checkbox" name="red"></p>
         <p><input type="submit" value="Submit"></p>
     </form>
     <a href="index.html">Voltar</a>
