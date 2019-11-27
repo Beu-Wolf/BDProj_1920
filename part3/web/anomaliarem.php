@@ -25,21 +25,27 @@
                 }
             }
 
-            $sql = "SELECT id, ts FROM anomalia;";
+            $sql = "SELECT id, ts, tem_anomalia_redacao FROM anomalia;";
             $result = $db->prepare($sql);
             $result->execute();
 
             echo("<table>\n");
             echo('<th scope="col">ID</th>');
+            echo('<th scope="col">Tipo</th>');
             echo('<th scope="col">Timestamp</th>');
             echo('<th></th>');
             foreach($result as $row) {
+                $id = $row['id'];
+                $ts = $row['ts'];
+                $type = $row['tem_anomalia_redacao'] ? 'Redação' : 'Tradução';
+
                 echo("<tr>\n");
-                echo("<td>{$row['id']}</td>\n");
-                echo("<td>{$row['ts']}</td>\n");
+                echo("<td>{$id}</td>\n");
+                echo("<td>${type}</td>");
+                echo("<td>{$ts}</td>\n");
                 echo("<td>");
                 echo("<form action=\"\" method=\"POST\">");
-                echo("<input type=\"hidden\" name=\"id\" value=\"{$row['id']}\">");
+                echo("<input type=\"hidden\" name=\"id\" value=\"{$id}\">");
                 echo("<input type=\"submit\" value=\"Remover\">");
                 echo('</form>');
                 echo("</td>");
