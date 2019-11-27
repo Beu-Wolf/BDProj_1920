@@ -36,7 +36,9 @@
                 $desc = isset($_POST["desc"]) ? trim($_POST["desc"]) : NULL;
                 $loc = isset($_POST["loc"]) ? trim($_POST["loc"]) : NULL;
                 $coords = isset($_POST["coords"]) ? $_POST["coords"] : NULL;
-                parse_str($coords);
+                parse_str($coords, $coordinates);
+                $lat = $coordinates['lat'];
+                $lon = $coordinates['lon'];
 
                 # check values
                 if(is_string($desc) and 0 < strlen($desc) and strlen($desc) < $STRMAX and
