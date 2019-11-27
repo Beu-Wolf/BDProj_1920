@@ -4,7 +4,7 @@
         <title>Remover Anomalia</title>
     </head>
     <body>
-    <h1>Remover Anomalia Redação</h1>
+    <h1>Remover Anomalia Tradução</h1>
     <?php
         require 'db.php';
         try {
@@ -14,56 +14,56 @@
 
                 $db->beginTransaction();
 
-                $id = $_POST["id"];
-
-                $sql = "SELECT COUNT(*) FROM anomalia_traducao WHERE id = :id; ";
+                $sql = "DELETE FROM anomalia_traducao WHERE id = :id";
                 $result = $db->prepare($sql);
-                if($result->execute([':id' => $id])) {
-                    if($result->fetchColumn() > 0) {
-                        $sql =  "UPDATE anomalia SET tem_anomalia_redacao = False WHERE id = :id;";
-                        $result = $db->prepare($sql);
-                        if($result->execute([':id' => $id])) {
-                            echo("<p>Anomalia de redação eliminada</p>");
+                if($result->execute([':id' => $_POST["id"]])) {
+
+                    $sql = "SELECT tem_anomalia_redacao FROM anomalia WHERE id = :id;";
+                    $result = $db->prepare($sql);
+                    if($result->execute([':id' => $_POST["id"]])) {
+                        if(($result->fetch())['tem_anomalia_redacao']) {
+                            echo("<p>Anomalia {$_POST["id"]} removida!</p>");
                             $db->commit();
                         } else {
-                            echo("<p>Erro a remover anomalia!</p>");
-                            $db->rollBack();
-                        }
                         
+                            $sql = "DELETE FROM anomalia WHERE id = :id;";
+                            $result = $db->prepare($sql);
+                        
+                            if($result->execute([':id' => $_POST["id"]])) {
+                                echo("<p>Anomalia {$_POST["id"]} removida!</p>");
+                                $db->commit();
+                            } else {
+                                echo("<p>Erro a remover anomalia!</p>");
+                                $db->rollBack();
+                            }
+                        }
                     } else {
-                        $sql = "DELETE FROM anomalia WHERE id = :id;";
-                        $result = $db->prepare($sql);
-                        if($result->execute([':id' => $id])) {
-                            echo("<p>Anomalia de redação eliminada</p>");
-                            $db->commit();
-                        } else {
-                            echo("<p>Erro a remover anomalia!</p>");
-                            $db->rollBack();
-                        }
-                        
+                        echo("<p>Erro a remover anomalia!</p>");
+                        $db->rollBack();
                     }
-                
-                
                 } else {
                     echo("<p>Erro a remover anomalia!</p>");
                     $db->rollBack();
                 }
             }
 
-            $sql = "SELECT id, ts, tem_anomalia_redacao FROM anomalia WHERE tem_anomalia_redacao = TRUE;";
+            $sql = "SELECT id, zona2, lingua2 FROM anomalia_traducao;";
             $result = $db->prepare($sql);
             $result->execute();
 
             echo("<table>\n");
             echo('<th scope="col">ID</th>');
-            echo('<th scope="col">Timestamp</th>');
+            echo('<th scope="col">Zona2</th>');
+            echo('<th scope="col">Lingua2</th>');
             echo('<th></th>');
             foreach($result as $row) {
                 $id = $row['id'];
-                $ts = $row['ts'];
+                $ts = $row['zona2'];
+                $type = $row['lingua2'];
 
                 echo("<tr>\n");
                 echo("<td>{$id}</td>\n");
+                echo("<td>${type}</td>");
                 echo("<td>{$ts}</td>\n");
                 echo("<td>");
                 echo("<form action=\"\" method=\"POST\">");
@@ -72,7 +72,6 @@
                 echo('</form>');
                 echo("</td>");
                 echo("</tr>\n");
-            
             }
             echo("</table>");
         } catch (PDOException $e) { 
