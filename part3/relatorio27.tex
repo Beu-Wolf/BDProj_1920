@@ -21,9 +21,9 @@
 
             \Large
             \textbf{Grupo 27} \\
-            89427 - Daniel Seara - 33,3\% - 6 horas \\
-            89399 - Afonso Gonçalves - 33,3\% - 6 horas \\
-            89496 - Marcelo Santos - 33,3\% - 6 horas \\
+            89427 - Daniel Seara - 33,3\% - 14 horas \\
+            89399 - Afonso Gonçalves - 33,3\% - 14 horas \\
+            89496 - Marcelo Santos - 33,3\% - 14 horas \\
 
             \bigskip
             \textbf{Turno:} 4ª Feira 9h30 - Lab 8\\ \textbf{Professor:} Duarte Galvão
@@ -32,20 +32,21 @@
     \end{titlepage}
 
     \Large
-    \textbf{Criação da base de Dados:}\\
+    \textbf{Criação e Preenchimento da base de Dados:}\\
     
     \normalsize
     \vspace{2mm}
-
-    Assumindo que se tem um utilizador configurado num servidor PSQL, para criar a base de dados deverá correr os seguintes comandos:
+    Após a instalação e configuração do PostgreSQL no computador host, criou-se uma Base de Dados chamada \textit{translateRight} com o seguinte comando:
     \begin{verbatim}
         $ createdb translateRight
-        $ psql -d translateRight
-        translateRight=# \i schema.sql
     \end{verbatim}
     
-    \vspace*{15mm}
-
+    Para popular a base de dados usou-se dois ficheiros .sql: \textit{schema.sql}, que trata de criar/reiniciar as tabelas e definir as restrições de integridade, e \textit{populate.sql}, que insere um pequeno conjunto de dados de teste na Base de Dados
+    \begin{verbatim}
+        $ psql -d translateRight
+        translateRight=# \i schema.sql
+        translateRight=# \i populate.sql
+    \end{verbatim}
 
     \Large 
     \textbf{Consultas SQL:}
@@ -107,37 +108,60 @@
         
     \end{enumerate}
 
-    \vspace*{15mm}
-
-
+    % \vspace*{10mm}
+    \newpage
     \Large 
     \textbf{Arquitetura da aplicação PHP:}
 
     \normalsize
     \vspace{2mm}
 
-    \hspace*{1em} A aplicação inicia no ficheiro \textit{index.html}, onde se encontram todas as opções possíveis a realizar com a base de dados. Ao clicar em qualquer um dos links,
-    é redirecionado para uma página php que permite executar a ação pretendida. Por exemplo, se o objetivo for eliminar um item, do ficheiro \textit{index.hmtl} é redirecionado para 
-    o ficheiro \textit{itemrem.php} onde estão listados todos os items da base de dados e pode escolher o item a eliminar ao carregar no botão correspondente. Todas as funcionalidades 
-    estão implementadas em ficheiros diferentes, não havendo um "ficheiro único" que realize todas as ações possíveis.\\
+    \hspace*{1em}
+    A página inicial da aplicação permite ao utilizador efetuar qualquer uma das ações especificadas no enunciado, através de diversos links para outras páginas \textit{.php} ou \textit{.html}. Cada uma destas páginas está dedicada a uma ação específica, coerente com o seu nome. \\
+    
+    \hspace*{1em} Todas as páginas seguem a seguinte estrutura:
+    \\
+    
+    \hspace*{1em}Inicialmente é estabelecida a ligação à base de dados, usando a função \textit{connect\_db}, definida no ficheiro \textit{db.php}. Este ficheiro usa variáveis de ambiente previamente definidas no ambiente anfitrião para se autenticar na base de dados.
+    \\
+    
+    \hspace*{1em} De seguida procede-se à preparação da instrução SQL a executar para efetuar a ação desejada, usando o comando \textit{\$db->prepare(\$sql))} (este comando é importante para se proteger contra ataques de SQL injection). Como cada página é dedicada a uma ação única, este query é também único para cada ação.
+    Em cada página executa-se ainda um outro query SQL: este disponibiliza ao utilizador informação importante na especificação da ação que se pretende executar. A aplicação mostra os items existentes quando o utilizador pretender remover um, por exemplo.
+    \\
+    
+    \hspace*{1em} Nesta fase, aguarda-se o input do utilizador, fornecido por formulários HTML. Estes forms, quando submetidos geram um POST request para uma página \textit{.php} que trata destes dados. A implementação presente usa a mesma página para receção e tratamento de dados. No tratamento de dados dá-se uma sanitização do input como medida de segurança adicional.
+    \\
+    
+    \hspace*{1em} Finalmente procede-se à execução da ação, através de instruções SQL. Todas as ações que alteram o estado da base de dados são realizadas dentro de uma transação, para garantir a integridade da mesma. Depois da execução da ação, é apresentada ao utilizador uma mensagem de feedback do resultado da mesma.
+    \\
+    
+    % Relacao entre as varias paginas, hierarquicamente
+    
+    
+    % A aplicação inicia no ficheiro \textit{index.html}, onde se encontram todas as opções possíveis a realizar com a base de dados. Ao clicar em qualquer um dos links,
+    %é redirecionado para uma página php que permite executar a ação pretendida. Por exemplo, se o objetivo for eliminar um item, do ficheiro \textit{index.hmtl} é redirecionado para 
+    %o ficheiro \textit{itemrem.php} onde estão listados todos os items da base de dados e pode escolher o item a eliminar ao carregar no botão correspondente. Todas as funcionalidades 
+    %estão implementadas em ficheiros diferentes, não havendo um "ficheiro único" que realize todas as ações possíveis.\\
 
-    \hspace*{1em} A única funcionalidade que não redireciona para um ficheiro php é a funcionalidade de listar anomalias a (dX, dY) graus de (latitude, longitude), onde se é redirecionado para um ficheiro html (\textit{anomalialatform.html})
-    para se escrever os parâmetros desejados. Depois de preencher o formulário, é redirecionado para o ficheiro \textit{anomaliathreemonth.php}. \\
+    %\hspace*{1em} A única funcionalidade que não redireciona para um ficheiro php é a funcionalidade de listar anomalias a (dX, dY) graus de (latitude, longitude), onde se é redirecionado para um ficheiro html (\textit{anomalialatform.html})
+   % para se escrever os parâmetros desejados. Depois de preencher o formulário, é redirecionado para o ficheiro %\textit{anomaliathreemonth.php}. \\
 
-    \hspace*{1em} ATENCÃO: para se ligar à base de dados, os ficheiros php usam as variáveis de ambiente POSTGRES\_USER e POSTGRES\_PASS, que devem ser definidas pelo host da base de dados. \\
+    %\hspace*{1em} ATENCÃO: para se ligar à base de dados, os ficheiros php usam as variáveis de ambiente POSTGRES\_USER e POSTGRES\_PASS, que devem ser definidas no host da base de dados. \\
 
-    \hspace*{1em} Qualquer página da aplicação, à exceção do \textit{index.html}, possui um link para se retroceder para a página anterior.\\
+    %\hspace*{1em} Qualquer página da aplicação, à exceção do \textit{index.html}, possui um link para se retroceder para a página anterior.\\
 
-    \hspace*{1em} Os ficheiros php desta aplicação seguem a seguinte estrutura:
-    \begin{enumerate}
-        \item ligação à base de dados (usando a função definida no ficheiro \textit{db.php})
-        \item apresentação de tabelas relevantes a executar a ação pretendida (por exemplo apresentar a lista de itens quando se quer registar itens duplicados)
-        \item leitura do input do utilizador, seja por meio do preenchimento de um form (ao inserir anomalias, por exemplo) ou de selecionar uma linha da tabela relevante (para eliminar locais, por exemplo)
-        \item criação de uma query SQL a executar, seguido da sua "preparação" (\textit{\$db->prepare(\$sql))})
-        \item execução do query e apresentação da tabela atualizada, ou de uma mensagem de confirmação
+    %\hspace*{1em} Os ficheiros php desta aplicação seguem a seguinte estrutura:
+    %\begin{enumerate}
+     %   \item Ligação à base de dados (usando a função definida no ficheiro \textit{db.php})
+      %  \item Apresentação de tabelas relevantes à execução da ação pretendida (por exemplo apresentar a lista de itens quando se quer registar itens duplicados)
+      %  \item Leitura do input do utilizador, seja por meio do preenchimento de um form (ao inserir anomalias, por exemplo) ou de selecionar uma linha da tabela relevante (para eliminar locais, por exemplo)
+       % \item Validação e verificação dos campos introduzidos;
+    %    \item Criação de uma query SQL a executar, seguido da sua "preparação" (\textit{\$db->prepare(\$sql))})
+    %    \item Execução do query e apresentação da tabela atualizada, ou de uma mensagem de confirmação
         
-    \end{enumerate}
+    %\end{enumerate}
 
-    \hspace*{1em} Todas as ações que implicam uma mudança no estado da base de dados são realizadas a partir de transações, para garantir a atomicidade das mesmas. \\
+    %\hspace*{1em} Todas as ações que implicam uma mudança no estado da base de dados são realizadas a partir de transações, para garantir a atomicidade das mesmas. \\
 
 \end{document}
+
