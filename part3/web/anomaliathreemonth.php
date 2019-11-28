@@ -21,21 +21,12 @@
 
 
                 #sort latitudes and longitudes for query
-                if($latitude + $dX > $latitude) {
-                    $latitude1 = $latitude;
-                    $latitude2 = $latitude + $dX;
-                } else {
-                    $latitude1 = $latitude + $dX;
-                    $latitude2 = $latitude;
-                }
+                $latitude1 = $latitude - $dX;
+                $latitude2 = $latitude + $dX;
 
-                if($longitude + $dY > $longitude) {
-                    $longitude1 = $longitude;
-                    $longitude2 = $longitude + $dY;
-                } else {
-                    $longitude1 = $longitude + $dY;
-                    $longitude2 = $longitude;
-                }
+                $longitude1 = $longitude - $dY;
+                $longitude2 = $longitude + $dY;
+                
 
                 $sql = "SELECT A.id, A.zona, A.imagem, A.lingua, A.ts, A.descricao, A.tem_anomalia_redacao
                 FROM item AS I, incidencia AS B, anomalia AS A
