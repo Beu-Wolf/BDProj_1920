@@ -27,12 +27,9 @@
             # existing locations
             $xLocationsQr = $db->prepare("select * from local_publico order by nome");
             $xLocationsQr->execute();
-            # TODO: e mesmo preciso fazer fetchAll? pode comer a ram toda se for um resultado grandinho...
             $xLocations = $xLocationsQr->fetchAll();
 
             if ($_SERVER["REQUEST_METHOD"] == 'POST') {
-                # if parameter is not set, the variable is automatically assigned to NULL
-                # TODO: shoud we keep this this way?
                 $desc = isset($_POST["desc"]) ? trim($_POST["desc"]) : NULL;
                 $loc = isset($_POST["loc"]) ? trim($_POST["loc"]) : NULL;
                 $coords = isset($_POST["coords"]) ? $_POST["coords"] : NULL;
@@ -43,10 +40,6 @@
                 # check values
                 if(is_string($desc) and 0 < strlen($desc) and strlen($desc) < $STRMAX and
                    is_string($loc)  and 0 < strlen($loc)  and strlen($loc)  < $STRMAX and
-
-                   # is_numeric($lat) and -90 < $lat and $lat < 90 and
-                   # is_numeric($lon) and -180 < $lon and $lon < 180 and
-                   # this function already checks if is numeric and 'is in correct range'
                    coordsExist($lat, $lon, $xLocations)
                 ) {
                     $db->beginTransaction();
@@ -57,6 +50,7 @@
                     
                     echo("<p>Item adicionado!</p>");
                 } else {
+                    $db->rollback();
                     echo("ERROR: Could not add item. Invalid fields\n");
                 }
             }
