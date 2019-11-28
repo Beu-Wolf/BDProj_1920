@@ -12,39 +12,44 @@
 
             if ($_SERVER["REQUEST_METHOD"] == 'POST') {
 
-                $db->beginTransaction();
+                try {
+                   $db->beginTransaction();
 
-                $sql = "DELETE FROM anomalia_traducao WHERE id = :id";
-                $result = $db->prepare($sql);
-                if($result->execute([':id' => $_POST["id"]])) {
-
-                    $sql = "SELECT tem_anomalia_redacao FROM anomalia WHERE id = :id;";
+                    $sql = "DELETE FROM anomalia_traducao WHERE id = :id";
                     $result = $db->prepare($sql);
                     if($result->execute([':id' => $_POST["id"]])) {
-                        if(($result->fetch())['tem_anomalia_redacao']) {
-                            echo("<p>Anomalia {$_POST["id"]} removida!</p>");
-                            $db->commit();
-                        } else {
-                        
-                            $sql = "DELETE FROM anomalia WHERE id = :id;";
-                            $result = $db->prepare($sql);
-                        
-                            if($result->execute([':id' => $_POST["id"]])) {
+
+                        $sql = "SELECT tem_anomalia_redacao FROM anomalia WHERE id = :id;";
+                        $result = $db->prepare($sql);
+                        if($result->execute([':id' => $_POST["id"]])) {
+                            if(($result->fetch())['tem_anomalia_redacao']) {
                                 echo("<p>Anomalia {$_POST["id"]} removida!</p>");
                                 $db->commit();
                             } else {
-                                echo("<p>Erro a remover anomalia!</p>");
-                                $db->rollBack();
+                            
+                                $sql = "DELETE FROM anomalia WHERE id = :id;";
+                                $result = $db->prepare($sql);
+                            
+                                if($result->execute([':id' => $_POST["id"]])) {
+                                    echo("<p>Anomalia {$_POST["id"]} removida!</p>");
+                                    $db->commit();
+                                } else {
+                                    echo("<p>Erro a remover anomalia!</p>");
+                                    $db->rollBack();
+                                }
                             }
+                        } else {
+                            echo("<p>Erro a remover anomalia!</p>");
+                            $db->rollBack();
                         }
                     } else {
                         echo("<p>Erro a remover anomalia!</p>");
                         $db->rollBack();
-                    }
-                } else {
-                    echo("<p>Erro a remover anomalia!</p>");
-                    $db->rollBack();
+                    } 
+                } catch(PDOEsception $e) {
+                    echo("<p>ERROR; {$e->getMessage()}</p>");
                 }
+                
             }
 
             $sql = "SELECT id, zona2, lingua2 FROM anomalia_traducao;";
