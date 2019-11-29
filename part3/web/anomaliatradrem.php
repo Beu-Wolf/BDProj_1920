@@ -47,7 +47,7 @@
                         $db->rollBack();
                     } 
                 } catch(PDOEsception $e) {
-                    echo("<p>ERROR; {$e->getMessage()}</p>");
+                    echo("<p>ERROR: {$e->getMessage()}</p>");
                 }
                 
             }

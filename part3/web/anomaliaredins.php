@@ -11,16 +11,20 @@
                 $db = connect_db();
                 
                 $zona = $_POST['zona'];
-                $imagem = $_POST['imagem'];
                 $lingua = $_POST['lingua'];
                 $ts = $_POST['ts'];
                 $descricao = $_POST['descricao'];
 
-                if(!strstr($imagem, "\x")) {
-                    throw new Exception("Imagem tem de ser um número hexadecimal \x...!");
-                }
-                
+
                 try {
+                    if ($_FILES['imagem']['size'] > 20 * 2**20) {
+                        throw new Exception('Erro: Tamanho máximo da imagem é de 20MiB');
+                    }
+
+                    $f = fopen($_FILES['imagem']['tmp_name'], 'rb');
+                    $imagem = pg_escape_bytea(fread($f, $_FILES['imagem']['size']));
+                    fclose($f);
+
                     $db->beginTransaction();
                 
                     $sql = "INSERT INTO anomalia(zona, imagem, lingua, ts, descricao, tem_anomalia_redacao) VALUES (:zona, :imagem, :lingua, :ts, :descricao, True);";
@@ -41,30 +45,30 @@
                     if(strstr($msg, "type box")) {
                         echo("<p>Zona1 tem de ser do tipo box (x1,y1),(x2,y2)</p>");
                     
-                    } else if(strstr($msg, "datetime format")){
+                    } else if (strstr($msg, "datetime format")){
                         echo("<p>Timestamp tem de ser do tipo datedite YYYY-MM-DD HH:MM:SS</p>");
                     
-                    } else if(strstr($msg, "odd number of digits") || strstr($msg, "invalid hexadecimal")){
-                        echo("<p>Valor hexadecimal tem de ter digitos em número par e com caracteres entre 0..f</p>");
+                    } else if (strstr($msg, 'null value')) {
+                        echo("<p>Erro: Valores em falta!</p>");
+
                     } else {
-                        echo("<p>ERROR; {$e->getMessage()}</p>");
+                        echo("<p>ERROR: {$e->getMessage()}</p>");
                     }
                     $db->rollBack();
+                } catch(Exception $e) {
+                    echo("<p>{$e->getMessage()}</p>");
                 }
                 
                 $db = null;
             }
 
         } catch (PDOException $e) {
-            echo("<p>ERROR; {$e->getMessage()}</p>");
-        } catch(Exception $e) {
-            echo("<p>Imagem tem de ser um número hexadecimal \x...</p>");
-        }
-    
+            echo("<p>ERROR: {$e->getMessage()}</p>");
+        } 
     ?>
-    <form action="" method="post">
+    <form enctype="multipart/form-data" action="" method="post">
         <p>Zona1: <input type="text" name="zona" required></p>
-        <p>Imagem: <input type="text" name="imagem" required></p>
+        <p>Imagem: <input type="file" name="imagem" required></p>
         <p>Lingua: <input type="text" name="lingua" required></p>
         <p>Timestamp: <input type="datetime-local" name="ts" required></p>
         <p>Descrição: <input type="text" name="descricao" required></p>
