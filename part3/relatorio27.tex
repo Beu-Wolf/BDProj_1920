@@ -238,23 +238,17 @@
     \vspace{2mm}
 
     \hspace*{1em}
-    A página inicial da aplicação permite ao utilizador efetuar qualquer uma das ações especificadas no enunciado, através de diversos links para outras páginas \textit{.php} ou \textit{.html}. Cada uma destas páginas está dedicada a uma ação específica, coerente com o seu nome. \\
+    A página inicial da aplicação permite ao utilizador efetuar qualquer uma das ações especificadas no enunciado, através de diversos links para outras páginas \textit{.php} ou \textit{.html}. Cada uma destas páginas está dedicada a uma ação específica, de acordo com o seu nome. \\
 
-    \hspace*{1em} Todas as páginas seguem a seguinte estrutura:
+    \hspace*{1em} Na maior parte dos casos, o tratamento da recolha de dados do utilizador, listagem de tabelas para auxiliar o preenchimento dos campos e comunicação com a base de dados são tratados no mesmo ficheiro \textit{.php}:
     \\
+    \begin{enumerate}
+        \item É feita a conecção à base de dados através da função \textit{connect\_db}, definida no ficheiro \textit{db.php}, destinado à implementação de código partilhado pelas várias páginas do sistema. Esta função recerre à leitura de variáveis de ambiente previamente definidas para obter as credenciais de ligação ao servidor de PostgreSQL.
+        \item É mostrado ao utilizador um formulário \textit{HTML} para preencher os dados necessários à realização da ação da página. Caso os dados dependam de informação já presente na base de dados, é feito um query a esta para tornar o formulário mais fácil de preencher.
+        \item Na submissão do formulário, é feito um \textit{POST request} à própria página para tornar a interação mais dinâmica. Em casos mais difíceis no que toca à apresentação de informação, o \textit{request} é feito a outra página.
+        \item Valida-se o input e é feita a preparação das instruções \textit{SQL} para prevenir contra \textit{SQL injections} através do par de métodos \textit{prepare} e \textit{execute}. A atomicidade das alterações efetuadas à base de dados é garantida pelo método \textit{beginTransaction}. As exceções levantadas pelas violações a restrições de integridade são tratadas e devolvem mensagens de erro informativas ao utilizador.
+    \end{enumerate}
 
-    \hspace*{1em}Inicialmente é estabelecida a ligação à base de dados, usando a função \textit{connect\_db}, definida no ficheiro \textit{db.php}. Este ficheiro usa variáveis de ambiente previamente definidas no ambiente anfitrião para se autenticar na base de dados.
-    \\
-
-    \hspace*{1em} De seguida procede-se à preparação da instrução SQL a executar para efetuar a ação desejada, usando o comando \textit{\$db->prepare(\$sql))} (este comando é importante para se proteger contra ataques de SQL injection). Como cada página é dedicada a uma ação única, este query é também único para cada ação.
-    Em cada página executa-se ainda um outro query SQL: este disponibiliza ao utilizador informação importante na especificação da ação que se pretende executar. A aplicação mostra os items existentes quando o utilizador pretender remover um, por exemplo.
-    \\
-
-    \hspace*{1em} Nesta fase, aguarda-se o input do utilizador, fornecido por formulários HTML. Estes forms, quando submetidos geram um POST request para uma página \textit{.php} que trata destes dados. A implementação presente usa a mesma página para receção e tratamento de dados. No tratamento de dados dá-se uma sanitização do input como medida de segurança adicional.
-    \\
-
-    \hspace*{1em} Finalmente procede-se à execução da ação, através de instruções SQL. Todas as ações que alteram o estado da base de dados são realizadas dentro de uma transação, para garantir a integridade da mesma. Depois da execução da ação, é apresentada ao utilizador uma mensagem de feedback do resultado da mesma.
-    \\
 
     % Relacao entre as varias paginas, hierarquicamente
 
