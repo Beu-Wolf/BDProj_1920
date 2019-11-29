@@ -44,7 +44,7 @@
             echo('<th scope="col">Lingua</th>');
             echo('<th scope="col">TS</th>');
             echo('<th scope="col">Descricao</th>');
-            echo('<th scope="col">Anomalia Traducao?</th>');
+            echo('<th scope="col">Anomalia Redação?</th>');
             foreach($result as $row) {
                 echo("<tr>\n");
                 echo("<td>{$row['id']}</td>");
@@ -53,7 +53,11 @@
                 echo("<td>{$row['lingua']}</td>");
                 echo("<td>{$row['ts']}</td>");
                 echo("<td>{$row['descricao']}</td>");
-                echo("<td>{$row['tem_anomalia_redacao']}</td>");
+                if ($row['tem_anomalia_redacao']) {
+                    echo("<td>Sim</td>");
+                } else {
+                    echo("<td>Não</td>");
+                }
                 echo("</tr>\n");
                 $count++;
 
