@@ -246,41 +246,15 @@
         \item É feita a conecção à base de dados através da função \textit{connect\_db}, definida no ficheiro \textit{db.php}, destinado à implementação de código partilhado pelas várias páginas do sistema. Esta função recerre à leitura de variáveis de ambiente previamente definidas para obter as credenciais de ligação ao servidor de PostgreSQL.
         \item É mostrado ao utilizador um formulário \textit{HTML} para preencher os dados necessários à realização da ação da página. Caso os dados dependam de informação já presente na base de dados, é feito um query a esta para tornar o formulário mais fácil de preencher.
         \item Na submissão do formulário, é feito um \textit{POST request} à própria página para tornar a interação mais dinâmica. Em casos mais difíceis no que toca à apresentação de informação, o \textit{request} é feito a outra página.
-        \item Valida-se o input e é feita a preparação das instruções \textit{SQL} para prevenir contra \textit{SQL injections} através do par de métodos \textit{prepare} e \textit{execute}. A atomicidade das alterações efetuadas à base de dados é garantida pelos métodos \textit{beginTransaction} e \textit{commit}. As exceções levantadas pelas violações a restrições de integridade são tratadas e devolvem mensagens de erro informativas ao utilizador.
+        \item Valida-se o input e é feita a preparação das instruções \textit{SQL} para prevenir contra \textit{SQL injections} através do par de métodos \textit{prepare} e \textit{execute}. A atomicidade das alterações efetuadas à base de dados é garantida pelos métodos \textit{beginTransaction} e \textit{commit}. As exceções levantadas pelas violações a restrições de integridade são tratadas (a transação \textit{SQL} é cancelada com o método \textit{rollback}) e devolvem mensagens de erro informativas ao utilizador.
     \end{enumerate}
     \hspace*{1em}
     Os ficheiros, à exceção de \textit{index.html}, seguem a nomenclatura entidade+ação abreviada \\ (e.g. \textit{propcorrins.php} simboliza \textit{proposta de correção + inserir}). \\
     \hspace*{1em}
-    Todas as ações à exceção de Listar Anomalias entre 2 Locais Públicos, Listar Anomalias registas nos últimos 3 meses a (dx, dy) graus, e Editar Correção têm as suas implementações contidas num só ficheiro.
+    Todas as ações à exceção de Listar Anomalias entre 2 Locais Públicos, Listar Anomalias registadas nos últimos 3 meses a (dx, dy) graus, e Editar Correção têm as suas implementações contidas num só ficheiro.
 
 
     % Relacao entre as varias paginas, hierarquicamente
-
-
-    % A aplicação inicia no ficheiro \textit{index.html}, onde se encontram todas as opções possíveis a realizar com a base de dados. Ao clicar em qualquer um dos links,
-    %é redirecionado para uma página php que permite executar a ação pretendida. Por exemplo, se o objetivo for eliminar um item, do ficheiro \textit{index.hmtl} é redirecionado para
-    %o ficheiro \textit{itemrem.php} onde estão listados todos os items da base de dados e pode escolher o item a eliminar ao carregar no botão correspondente. Todas as funcionalidades
-    %estão implementadas em ficheiros diferentes, não havendo um "ficheiro único" que realize todas as ações possíveis.\\
-
-    %\hspace*{1em} A única funcionalidade que não redireciona para um ficheiro php é a funcionalidade de listar anomalias a (dX, dY) graus de (latitude, longitude), onde se é redirecionado para um ficheiro html (\textit{anomalialatform.html})
-   % para se escrever os parâmetros desejados. Depois de preencher o formulário, é redirecionado para o ficheiro %\textit{anomaliathreemonth.php}. \\
-
-    %\hspace*{1em} ATENCÃO: para se ligar à base de dados, os ficheiros php usam as variáveis de ambiente POSTGRES\_USER e POSTGRES\_PASS, que devem ser definidas no host da base de dados. \\
-
-    %\hspace*{1em} Qualquer página da aplicação, à exceção do \textit{index.html}, possui um link para se retroceder para a página anterior.\\
-
-    %\hspace*{1em} Os ficheiros php desta aplicação seguem a seguinte estrutura:
-    %\begin{enumerate}
-     %   \item Ligação à base de dados (usando a função definida no ficheiro \textit{db.php})
-      %  \item Apresentação de tabelas relevantes à execução da ação pretendida (por exemplo apresentar a lista de itens quando se quer registar itens duplicados)
-      %  \item Leitura do input do utilizador, seja por meio do preenchimento de um form (ao inserir anomalias, por exemplo) ou de selecionar uma linha da tabela relevante (para eliminar locais, por exemplo)
-       % \item Validação e verificação dos campos introduzidos;
-    %    \item Criação de uma query SQL a executar, seguido da sua "preparação" (\textit{\$db->prepare(\$sql))})
-    %    \item Execução do query e apresentação da tabela atualizada, ou de uma mensagem de confirmação
-
-    %\end{enumerate}
-
-    %\hspace*{1em} Todas as ações que implicam uma mudança no estado da base de dados são realizadas a partir de transações, para garantir a atomicidade das mesmas. \\
 
 \end{document}
 
