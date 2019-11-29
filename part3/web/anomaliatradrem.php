@@ -52,24 +52,30 @@
                 
             }
 
-            $sql = "SELECT id, zona2, lingua2 FROM anomalia_traducao;";
+            $sql = "SELECT id, ts, descricao, lingua, lingua2 FROM anomalia_traducao natural join anomalia;";
             $result = $db->prepare($sql);
             $result->execute();
 
-            echo("<table>\n");
+            echo('<table style="border-spacing: 10px;">');
             echo('<th scope="col">ID</th>');
-            echo('<th scope="col">Zona2</th>');
+            echo('<th scope="col">Timestamp</th>');
+            echo('<th scope="col">Lingua</th>');
             echo('<th scope="col">Lingua2</th>');
+            echo('<th scope="col">Descrição</th>');
             echo('<th></th>');
             foreach($result as $row) {
                 $id = $row['id'];
-                $ts = $row['zona2'];
-                $type = $row['lingua2'];
+                $ts = $row['ts'];
+                $desc = $row['descricao'];
+                $lang = $row['lingua'];
+                $lang2 = $row['lingua2'];
 
                 echo("<tr>\n");
                 echo("<td>{$id}</td>\n");
-                echo("<td>${type}</td>");
                 echo("<td>{$ts}</td>\n");
+                echo("<td>{$lang}</td>");
+                echo("<td>{$lang2}</td>");
+                echo("<td>{$desc}</td>\n");
                 echo("<td>");
                 echo("<form action=\"\" method=\"POST\">");
                 echo("<input type=\"hidden\" name=\"id\" value=\"{$id}\">");

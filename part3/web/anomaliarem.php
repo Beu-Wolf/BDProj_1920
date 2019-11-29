@@ -50,21 +50,24 @@
                 }
             }
 
-            $sql = "SELECT id, ts, tem_anomalia_redacao FROM anomalia WHERE tem_anomalia_redacao = TRUE;";
+            $sql = "SELECT id, ts, descricao FROM anomalia WHERE tem_anomalia_redacao = TRUE;";
             $result = $db->prepare($sql);
             $result->execute();
 
-            echo("<table>\n");
+            echo('<table style="border-spacing: 10px;">');
             echo('<th scope="col">ID</th>');
             echo('<th scope="col">Timestamp</th>');
+            echo('<th scope="col">Descrição</th>');
             echo('<th></th>');
             foreach($result as $row) {
                 $id = $row['id'];
                 $ts = $row['ts'];
+                $desc = $row['descricao'];
 
                 echo("<tr>\n");
                 echo("<td>{$id}</td>\n");
                 echo("<td>{$ts}</td>\n");
+                echo("<td>{$desc}</td>\n");
                 echo("<td>");
                 echo("<form action=\"\" method=\"POST\">");
                 echo("<input type=\"hidden\" name=\"id\" value=\"{$id}\">");
