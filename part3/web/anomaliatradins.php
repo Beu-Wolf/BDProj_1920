@@ -22,6 +22,10 @@
                 } else {
                     $hasRed = False;
                 }
+
+                if(!strstr($imagem, "\x")) {
+                    throw new Exception("Imagem tem de ser um número hexadecimal \x...!");
+                }
               
                 try {
                     $db->beginTransaction();
@@ -47,8 +51,19 @@
                     }
 
                 } catch(PDOException $e) {
-                    echo("<p>ERROR; {$e->getMessage()}</p>");
-                    $db->rollback();
+                    $msg = $e->getMessage();
+                        if(strstr($msg, "type box")) {
+                            echo("<p>Zona1 e Zona 2 têm de ser do tipo box (x1,y1),(x2,y2)</p>");
+                        
+                        } else if(strstr($msg, "datetime format")){
+                            echo("<p>Timestamp tem de ser do tipo datedite YYYY-MM-DD HH:MM:SS</p>");
+                        
+                        } else if(strstr($msg, "odd number of digits") || strstr($msg, "invalid hexadecimal")){
+                            echo("<p>Valor hexadecimal tem de ter digitos em número par e com caracteres entre 0..f</p>");
+                        } else {
+                            echo("<p>ERROR; {$e->getMessage()}</p>");
+                        }
+                        $db->rollBack();
                 }
                 
                 $db = null;
@@ -56,6 +71,8 @@
 
         } catch (PDOException $e) {
             echo("<p>ERROR; {$e->getMessage()}</p>");
+        } catch (Exception $e) {
+            echo("<p>Imagem tem de ser um número hexadecimal \x...</p>");
         }
     ?>
 
