@@ -51,6 +51,8 @@
                     } else if (strstr($msg, 'null value')) {
                         echo("<p>Erro: Valores em falta!</p>");
 
+                    } else if(strstr($msg, "value too long")){
+                        echo("<p>Descrição, Língua não podem ter mais de 255 chars</p>");
                     } else {
                         echo("<p>ERROR: {$e->getMessage()}</p>");
                     }

@@ -48,6 +48,118 @@
         translateRight=# \i populate.sql
     \end{verbatim}
 
+
+    \vspace{2mm}
+    Apresenta-se de seguida os comandos SQL presentes no ficheiro \textit{schema.sql}:
+
+    \small
+    \begin{verbatim}
+        create table local_publico (
+            latitude      numeric(8, 6) not null,
+            longitude     numeric(9, 6) not null,
+            nome          varchar(255) not null,
+            constraint pk_local_publico primary key(latitude, longitude),
+            constraint latitude_check check (-90 <= latitude and latitude <= 90),
+            constraint longitude_check check (-180 <= longitude and longitude <= 180)
+        );
+
+        create table item (
+            id             serial,
+            descricao      varchar(255) not null,
+            localizacao    varchar(255) not null,    
+            latitude       numeric(8, 6) not null,
+            longitude      numeric(9, 6) not null,
+            constraint fk_item_local_publico foreign key(latitude, longitude)
+                    references local_publico(latitude, longitude) on delete cascade,
+            constraint pk_item primary key(id)
+        );
+
+        create table anomalia (
+            id             serial,
+            zona           box not null,
+            imagem         bytea not null,
+            lingua         varchar(255) not null,
+            ts             timestamp not null,
+            descricao      varchar(255) not null,
+            tem_anomalia_redacao boolean not null,
+            constraint pk_anomalia primary key(id)
+        );
+
+        create table anomalia_traducao (
+            id             integer not null,
+            zona2          box not null,
+            lingua2        varchar(255) not null,
+            constraint pk_anomalia_traducao primary key(id),
+            constraint fk_anomalia_traducao_anomalia foreign key(id)
+                        references anomalia(id) on delete cascade
+        );
+
+        create table duplicado (
+            item1          integer not null,
+            item2          integer not null,
+            constraint pk_duplicado primary key(item1, item2),
+            constraint fk_duplicado_item foreign key(item1) 
+                        references item(id) on delete cascade,
+            constraint fk_duplicado_item2 foreign key(item2) 
+                        references item(id) on delete cascade,                    
+            check(item1 < item2)
+        );
+
+        create table utilizador (
+            email          varchar(255) not null,
+            password       varchar(255) not null,
+            constraint pk_utilizador primary key(email)         
+        );
+
+        create table utilizador_qualificado (
+            email           varchar(255) not null,
+            constraint pk_utilizador_qualificado primary key(email),
+            constraint fk_utilizador_qualificado_utilizador foreign key(email)
+                        references utilizador(email)
+        );
+
+        create table utilizador_regular (
+            email           varchar(255) not null,
+            constraint pk_utilizador_regular primary key(email),
+            constraint fk_utilizador_regular_utilizador foreign key(email)
+                        references utilizador(email)
+        );
+
+        create table incidencia (
+            anomalia_id        integer not null,
+            item_id            integer not null,
+            email              varchar(255) not null,
+            constraint pk_incidencia primary key(anomalia_id),
+            constraint fk_incidencia_anomalia foreign key(anomalia_id)
+                        references anomalia(id) on delete cascade,
+            constraint fk_incidencia_item foreign key(item_id)
+                        references item(id) on delete cascade,
+            constraint fk_incidencia_utilizador foreign key(email)
+                        references utilizador(email)
+        );
+
+        create table proposta_de_correcao (
+            email              varchar(255) not null,
+            nro                integer not null,
+            data_hora          timestamp not null,                  
+            texto              text not null,
+            constraint pk_proposta_de_correcao primary key(email, nro),
+            constraint fk_proposta_email foreign key(email)
+                        references utilizador_qualificado(email)
+        );
+
+        create table correcao (
+            email              varchar(255) not null,
+            nro                integer not null,
+            anomalia_id        integer not null,
+            constraint pk_correcao primary key(email, nro, anomalia_id),
+            constraint fk_correcao_proposta foreign key(email, nro)
+                        references proposta_de_correcao(email, nro) on delete cascade,
+            constraint fk_correcao_incidencia foreign key(anomalia_id)
+                        references incidencia(anomalia_id) on delete cascade
+        );         
+    \end{verbatim}
+
     \Large 
     \textbf{Consultas SQL:}
 
@@ -62,7 +174,7 @@
         \hspace*{1em} GROUP BY (latitude, longitude)) \\
                 SELECT latitude, longitude, nome \\
                 FROM local\_anomalia\_count \\
-                WHERE anomalia\_count = (SELECT MAX(anomalia\_count) FROM local\_anomalia\_count)
+                WHERE anomalia\_count = (SELECT MAX(anomalia\_count) FROM local\_anomalia\_count);
         
         \item WITH utilizador\_regular\_tmp(email, anomalia\_count) \\
               AS (SELECT I.email, COUNT(A.id) \\

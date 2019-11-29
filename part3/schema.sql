@@ -50,12 +50,6 @@ create table anomalia_traducao (
                 references anomalia(id) on delete cascade
 );
 
--- TODO: how to apply RI-1 and RI-2?? Maybe this way?
--- create assertion overlap_constraint check 
--- (
---     anomalia.lingua != anomalia_traducao.lingua2
---     not anomalia.zona && anomalia_traducao.zona2
--- );
 
 create table duplicado (
     item1          integer not null,

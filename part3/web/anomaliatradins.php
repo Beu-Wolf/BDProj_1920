@@ -50,7 +50,7 @@
                         $db->commit();
                     } else {
                         echo("<p>Erro a inserir anomalia!</p>");
-                        $db->rollback();
+                        $db->rollBack();
                     }
 
                 } catch(PDOException $e) {
@@ -64,6 +64,8 @@
                     } else if (strstr($msg, "datetime format")){
                         echo("<p>Timestamp tem de ser do tipo datedite YYYY-MM-DD HH:MM:SS</p>");
 
+                    } else if(strstr($msg, "value too long")){
+                        echo("<p>Descrição, Língua e Língua 2 não podem ter mais de 255 chars</p>");
                     } else {
                         echo("<p>ERROR: {$e->getMessage()}</p>");
                     }
