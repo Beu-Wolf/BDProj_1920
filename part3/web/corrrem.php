@@ -12,19 +12,40 @@
 
             if ($_SERVER["REQUEST_METHOD"] == 'POST') {
 
-                $db->beginTransaction();
+                try {
 
-                $sql = "DELETE FROM correcao WHERE email = :email AND nro = :nro AND anomalia_id = :anomalia_id;";
-                $result = $db->prepare($sql);
-                if($result->execute([':email' => $_POST["email"], ':nro' => $_POST['nro'], ':anomalia_id' => $_POST['anomalia_id']])){
-                    
-                    echo("<p>Correção de {$_POST["email"]} número {$_POST["nro"]} removida!</p>");
-                    
-                    $db->commit();
+                    $db->beginTransaction();
 
-                } else {
-                    echo("<p>Erro ao remover correção</p>");
-                    $db->rollBack();
+                    $sql = "DELETE FROM correcao WHERE email = :email AND nro = :nro AND anomalia_id = :anomalia_id;";
+                    $result = $db->prepare($sql);
+                    
+                    
+                    
+                    if($result->execute([':email' => $_POST["email"], ':nro' => $_POST['nro'], ':anomalia_id' => $_POST['anomalia_id']])){
+
+                        //Full participation
+                        $sql = "SELECT COUNT(*)
+                                FROM correcao
+                                WHERE email = :email AND nro = :nro;";
+                        $result = $db->prepare($sql);
+                        $result->execute([':email' => $_POST["email"],
+                                        ':nro' => $_POST['nro']]);
+                        $count = $result->fetch()[0];
+                        if ($count == 0) {
+                            $db->rollBack();
+                            throw new Exception("Erro: A remoção deixa a proposta de correção sem uma correção associada!");
+                        }
+                        
+                        echo("<p>Correção de {$_POST["email"]} número {$_POST["nro"]} removida!</p>");
+                        
+                        $db->commit();
+
+                    } else {
+                        echo("<p>Erro ao remover correção</p>");
+                        $db->rollBack();
+                    }
+                } catch(Exception $e) {
+                    echo("<p>{$e->getMessage()}</p>");
                 }
 
 
