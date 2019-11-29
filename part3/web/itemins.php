@@ -45,12 +45,15 @@
                     $db->beginTransaction();
                     $sql = "insert into item (descricao, localizacao, latitude, longitude) values(:desc, :loc, :lat, :lon);";
                     $result = $db->prepare($sql);
-                    $result->execute([':desc' => $desc, ':loc' => $loc, ':lat' => $lat, ':lon' => $lon]);
-                    $db->commit();
+                    if($result->execute([':desc' => $desc, ':loc' => $loc, ':lat' => $lat, ':lon' => $lon])) {
+                        $db->commit();
+                        echo("<p>Item adicionado!</p>");
+                    } else {
+                        echo("<p>Erro ao adicionar item</p>");
+                    }
                     
-                    echo("<p>Item adicionado!</p>");
+                    
                 } else {
-                    $db->rollback();
                     echo("ERROR: Could not add item. Invalid fields\n");
                 }
             }
@@ -79,7 +82,7 @@
             echo('</form>');
         } catch (PDOException $e) { 
             echo("<p>ERROR: {$e->getMessage()}</p>");
-            $db->rollback();
+            $db->rollBack();
         }
     ?>
     <br>

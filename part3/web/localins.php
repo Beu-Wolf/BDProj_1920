@@ -35,9 +35,13 @@
                     echo("<p>Latitude tem de estar entre -90 and 90</p>");
                 } else if(strstr($msg, "longitude_check")) {
                     echo("<p>Longitude tem de estar entre -180 and 180</p>");
+                } else if(strstr($msg, "value too long")) {
+                    echo("<p>Tamanho do input do nome do local demasiado longo. Max = 255 chars</p>");
+                } else {
+                    echo("ERROR: {$e->getMessage()}");
                 }
 
-                $db->rollback();
+                $db->rollBack();
             }
         ?>
         <form action="" method="post">

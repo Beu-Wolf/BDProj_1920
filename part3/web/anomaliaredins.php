@@ -46,6 +46,9 @@
                     
                     } else if(strstr($msg, "odd number of digits") || strstr($msg, "invalid hexadecimal")){
                         echo("<p>Valor hexadecimal tem de ter digitos em número par e com caracteres entre 0..f</p>");
+                    
+                    } else if(strstr($msg, "value too long")){
+                        echo("<p>Descrição, Língua não podem ter mais de 255 chars</p>");
                     } else {
                         echo("<p>ERROR; {$e->getMessage()}</p>");
                     }
