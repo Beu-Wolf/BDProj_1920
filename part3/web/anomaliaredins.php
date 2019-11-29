@@ -69,10 +69,10 @@
         } 
     ?>
     <form enctype="multipart/form-data" action="" method="post">
-        <p>Zona1: <input type="text" name="zona" required></p>
+        <p>Zona1: <input type="text" name="zona" placeholder="(x1,y1),(x2,y2)" required></p>
         <p>Imagem: <input type="file" name="imagem" required></p>
         <p>Lingua: <input type="text" name="lingua" required></p>
-        <p>Timestamp: <input type="datetime-local" name="ts" required></p>
+        <p>Timestamp: <input type="datetime-local" placeholder="YYYY-MM-DD HH:MM:SS" name="ts" required></p>
         <p>Descrição: <input type="text" name="descricao" required></p>
         <p><input type="submit" value="Submit"></p>
     </form>
