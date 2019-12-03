@@ -1,0 +1,28 @@
+TODO: Discutir estas soluções quando tivermos tempo e arranjar justificações
+
+1.1 - Sendo um tamanho tão grande, valerá a pena criar um índice e usá-lo?
+
+1.2 -  Usar B+ tree indexada à data_hora na tabela proposta_de_correção.
+A árvore B+ é a melhor para queries que usam operadores de maior, menor ou igual, pois 
+partindo da raiz para as folhas é facil encontrar o primeiro valor abaixo da data_hora incial
+e depois seguir todas as linhas até encontrar a data_hora final
+
+2 - Usar Hash index sobre anomalia_id na tabela incidencia
+Hash index é o melhor para queries que usam operadores de igual, pois se a função de 
+hashing for ótima, vai dividir uniformemente os valores pelos vários "baldes".
+Portanto ao executar a query, basta aplicar a hash function ao anomalia_id e pesquisar
+no "balde" correspondente.
+
+3.1 - Sendo um tamanho tão grande, valerá a pena criar um índice e usá-lo?
+
+3.2 - Usar B+ tree indexada à anomalia_id na tabela correcao
+Como especificado antes, a árvore é a melhor estrutura para este tipo de queries. Neste
+caso até é mais facilidata, pois basta encontrar a anomalia_id menor e seguir todo o
+resto da tabela até ao fim
+
+4 - Usar B+ tree indexada à ts, tem_anomalia_redacao, language sobre anomalia.
+B+ suporta índices multiplos e neste caso é o que temos de usar, para poder filtrar
+logo pelos parâmetros desejados.
+
+
+TODO: Discutir uso de índices multiplos em 1, 2, 3
