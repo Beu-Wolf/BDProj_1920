@@ -37,8 +37,8 @@ begin
 end;
 $$ language plpgsql;
 
-create trigger check_completeness after insert on utilizador
-for each row execute procedure check_completeness_proc();
+create constraint trigger check_completeness after insert on utilizador
+deferrable initially deferred for each row execute procedure check_completeness_proc();
 
 
 -- RI-5
