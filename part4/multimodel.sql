@@ -90,3 +90,16 @@ create table f_anomalia (
     references d_lingua(id_lingua) on delete cascade
 );
 
+insert into f_anomalia values(1, 7, 4, 3, 'tradução', TRUE);
+insert into f_anomalia values(2, 10, 2, 7, 'tradução', FALSE);
+insert into f_anomalia values(2, 5, 3, 6, 'tradução', TRUE);
+insert into f_anomalia values(3, 6, 4, 8, 'redação', TRUE);  --3
+insert into f_anomalia values(3, 8, 5, 5, 'redação', TRUE);  --9
+insert into f_anomalia values(3, 1, 1, 4, 'redação', TRUE);  --11
+insert into f_anomalia values(4, 10, 2, 7, 'tradução', FALSE); --5
+insert into f_anomalia values(4, 11, 5, 2, 'tradução', FALSE); --8
+insert into f_anomalia values(5, 10, 4, 5, 'tradução', TRUE); --1
+insert into f_anomalia values(5, 10, 2, 8, 'redação', TRUE); --6
+insert into f_anomalia values(5, 2, 5, 1, 'tradução', TRUE); --7
+
+
