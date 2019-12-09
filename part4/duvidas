@@ -1,0 +1,13 @@
+# Restricoes de Integridade
+ * -> A RI4 esta um bocado redundante com a 5 e 6. Podemos deixar assim?
+ * -> O populate teria de mudar para se poder testar a RI4. Podemos deixar a RI4 assim?
+-> Especificamos qual e a restricao de integridade como comentario no relarorio?
+
+# Indexes
+
+# Modelo Multidimensional
+ * -> "Escreva as instruções SQL necessárias para definir e carregar o esquema em estrela a partir das tabelas existentes, carregando primeiro as tabelas de dimensões e depois a tabela de factos". E suposto fazer a criacao automaticamente?
+
+
+# Data Analytics
+ * -> Queremos so a soma por cada um dos campos (GROUPING SETS ((tipo),(lingua),(dia_semana))
