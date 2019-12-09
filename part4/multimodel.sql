@@ -87,7 +87,8 @@ create table f_anomalia (
     constraint fk_local foreign key(id_local) 
     references d_local(id_local) on delete cascade,
     constraint fk_lingua foreign key(id_lingua) 
-    references d_lingua(id_lingua) on delete cascade
+    references d_lingua(id_lingua) on delete cascade,
+    constraint pk_f_anomalia primary key(id_utilizador, id_tempo, id_local, id_lingua)
 );
 
 insert into f_anomalia values(1, 7, 4, 3, 'tradução', TRUE);
