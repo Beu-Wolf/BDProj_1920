@@ -7,7 +7,12 @@ A árvore B+ é a melhor para queries que usam operadores de maior, menor ou igu
 partindo da raiz para as folhas é facil encontrar o primeiro valor abaixo da data_hora incial
 e depois seguir todas as linhas até encontrar a data_hora final
 
-2 - Usar Hash index sobre anomalia_id na tabela incidencia
+2 - Como o valor a procurar é a chave primária, o pgsql cria um index automaticamente 
+aquando da criação da tabela, logo não é necessário criar nenhum 
+
+
+
+Usar Hash index sobre anomalia_id na tabela incidencia
 Hash index é o melhor para queries que usam operadores de igual, pois se a função de 
 hashing for ótima, vai dividir uniformemente os valores pelos vários "baldes".
 Portanto ao executar a query, basta aplicar a hash function ao anomalia_id e pesquisar
