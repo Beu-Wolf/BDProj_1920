@@ -8,15 +8,15 @@ create table d_utilizador (
     id_utilizador serial,
     email         varchar(255) not null,
     tipo          varchar(255) not null,
-    constraint pk_d_utilizador primary key(id_utilizador) 
+    constraint pk_d_utilizador primary key(id_utilizador)
 );
 
 insert into d_utilizador (email, tipo)
-select email, 'qualificado' 
-as tipo from utilizador_qualificado 
-union 
-select email, 'regular' 
-as tipo from utilizador_regular;
+select email, 'qualificado' as tipo
+from utilizador_qualificado
+union
+select email, 'regular' as tipo
+from utilizador_regular;
 
 create table d_tempo (
     id_tempo        serial,
@@ -30,20 +30,20 @@ create table d_tempo (
 );
 
 insert into d_tempo(dia, dia_da_semana, semana, mes, trimestre, ano)
-select  extract(day from ts) as dia, 
-        extract(isodow from ts) ,
-        extract(week  from ts) as semana, 
-        extract(month from ts) as mes, 
-        extract(quarter from ts) as trimestre, 
-        extract(year from ts) as ano 
+select  extract(day from ts),
+        extract(isodow from ts),
+        extract(week  from ts),
+        extract(month from ts),
+        extract(quarter from ts),
+        extract(year from ts)
 from anomalia
-union 
-select extract(day from data_hora) as dia, 
-        extract(isodow from data_hora) ,
-        extract(week  from data_hora) as semana, 
-        extract(month from data_hora) as mes, 
-        extract(quarter from data_hora) as trimestre, 
-        extract(year from data_hora) as ano
+union
+select extract(day from data_hora),
+       extract(isodow from data_hora),
+       extract(week  from data_hora),
+       extract(month from data_hora),
+       extract(quarter from data_hora),
+       extract(year from data_hora)
 from proposta_de_correcao;
 
 
@@ -68,8 +68,8 @@ create table d_lingua (
 );
 
 insert into d_lingua (lingua)
-select distinct lingua from anomalia 
-union 
+select distinct lingua from anomalia
+union
 select distinct lingua2 from anomalia_traducao;
 
 
@@ -80,99 +80,59 @@ create table f_anomalia (
     id_lingua       integer,
     tipo_anomalia   varchar(255) not null,
     com_proposta    boolean not null,
-    constraint fk_utilizador foreign key(id_utilizador) 
-    references d_utilizador(id_utilizador) on delete cascade,
-    constraint fk_tempo foreign key(id_tempo) 
-    references d_tempo(id_tempo) on delete cascade,
-    constraint fk_local foreign key(id_local) 
-    references d_local(id_local) on delete cascade,
-    constraint fk_lingua foreign key(id_lingua) 
-    references d_lingua(id_lingua) on delete cascade,
+    constraint fk_utilizador foreign key(id_utilizador)
+        references d_utilizador(id_utilizador) on delete cascade,
+    constraint fk_tempo foreign key(id_tempo)
+        references d_tempo(id_tempo) on delete cascade,
+    constraint fk_local foreign key(id_local)
+        references d_local(id_local) on delete cascade,
+    constraint fk_lingua foreign key(id_lingua)
+        references d_lingua(id_lingua) on delete cascade,
     constraint pk_f_anomalia primary key(id_utilizador, id_tempo, id_local, id_lingua)
 );
 
+CREATE OR REPLACE FUNCTION get_tipo_anomalia(id integer) RETURNS VARCHAR(255)
+as $$
+BEGIN
+    IF id in (select A.id from anomalia_traducao A) THEN
+        RETURN 'traducao';
+    ELSE
+        RETURN 'redacao';
+    END IF;
+END
+$$ language plpgsql;
 
-insert into f_anomalia
-select  U.id_utilizador, T.id_tempo, L.id_local, G.id_lingua, 'redação', true
-        from anomalia as A, correcao as C, incidencia as I, 
-        item as M ,d_utilizador as U, d_tempo as T, d_local as L, d_lingua as G  
-        where A.tem_anomalia_redacao = true 
-        and A.id not in (select id from anomalia_traducao) 
-        and I.anomalia_id = A.id 
-        and M.id = I.item_id 
-        and C.anomalia_id = A.id 
-        and extract(day from A.ts) = T.dia 
-        and extract(month from A.ts) = T.mes 
-        and extract(year from A.ts) = T.ano 
-        and L.latitude = M.latitude 
-        and L.longitude = M.longitude 
-        and U.email = I.email 
-        and A.lingua = G.lingua
-union
-select  U.id_utilizador, T.id_tempo, L.id_local, G.id_lingua, 'redação', false 
-        from anomalia as A, incidencia as I, 
-        item as M ,d_utilizador as U, d_tempo as T, d_local as L, d_lingua as G  
-        where A.tem_anomalia_redacao = true 
-        and A.id not in (select id from anomalia_traducao)
-        and A.id not in (select anomalia_id from correcao)
-        and I.anomalia_id = A.id 
-        and M.id = I.item_id 
-        and extract(day from A.ts) = T.dia 
-        and extract(month from A.ts) = T.mes 
-        and extract(year from A.ts) = T.ano 
-        and L.latitude = M.latitude 
-        and L.longitude = M.longitude 
-        and U.email = I.email 
-        and A.lingua = G.lingua
-union
-select  U.id_utilizador, T.id_tempo, L.id_local, G.id_lingua, 'traducao', false 
-        from anomalia as A, incidencia as I, 
-        item as M ,d_utilizador as U, d_tempo as T, d_local as L, d_lingua as G  
-        where A.tem_anomalia_redacao = false 
-        and A.id not in (select anomalia_id from correcao)
-        and I.anomalia_id = A.id 
-        and M.id = I.item_id 
-        and extract(day from A.ts) = T.dia 
-        and extract(month from A.ts) = T.mes 
-        and extract(year from A.ts) = T.ano 
-        and L.latitude = M.latitude 
-        and L.longitude = M.longitude 
-        and U.email = I.email 
-        and A.lingua = G.lingua
-union
-select  U.id_utilizador, T.id_tempo, L.id_local, G.id_lingua, 'traducao', true 
-        from anomalia as A, incidencia as I, correcao as C, 
-        item as M ,d_utilizador as U, d_tempo as T, d_local as L, d_lingua as G  
-        where A.tem_anomalia_redacao = false 
-        and C.anomalia_id = A.id
-        and I.anomalia_id = A.id 
-        and M.id = I.item_id 
-        and extract(day from A.ts) = T.dia 
-        and extract(month from A.ts) = T.mes 
-        and extract(year from A.ts) = T.ano 
-        and L.latitude = M.latitude 
-        and L.longitude = M.longitude 
-        and U.email = I.email 
-        and A.lingua = G.lingua;
+CREATE OR REPLACE FUNCTION anomalia_tem_proposta(id integer) RETURNS BOOLEAN
+as $$
+BEGIN
+    IF id in (select anomalia_id from correcao) THEN
+        RETURN true;
+    ELSE
+        RETURN false;
+    END IF;
+END
+$$ language plpgsql;
 
--- insert into f_anomalia values(1, 7, 4, 3, 'tradução', TRUE);
--- insert into f_anomalia values(2, 10, 2, 7, 'tradução', FALSE);
--- insert into f_anomalia values(2, 5, 3, 6, 'tradução', TRUE);
--- insert into f_anomalia values(3, 6, 4, 8, 'redação', TRUE);  --3
--- insert into f_anomalia values(3, 8, 5, 5, 'redação', TRUE);  --9
--- insert into f_anomalia values(3, 1, 1, 4, 'redação', TRUE);  --11
--- insert into f_anomalia values(4, 10, 2, 7, 'tradução', FALSE); --5
--- insert into f_anomalia values(4, 11, 5, 2, 'tradução', FALSE); --8
--- insert into f_anomalia values(5, 10, 4, 5, 'tradução', TRUE); --1
--- insert into f_anomalia values(5, 10, 2, 8, 'redação', TRUE); --6
--- insert into f_anomalia values(5, 2, 5, 1, 'tradução', TRUE); --7
-
-
--- select  U.id_utilizador, 'redação', 't' from anomalia as A, correcao as C, incidencia as I natural join d_utilizador as U  where A.tem_anomalia_redacao = true and A.id not in (select id from anomalia_traducao) and I.anomalia_id = A.id and C.anomalia_id = A.id
--- union select A.id, 'redacao', 'f' from anomalia as A where A.id not in (select anomalia_id from correcao) and A.id not in (select id from anomalia_traducao) 
--- union select A.id, 'traducao', 'f' from anomalia as A where A.tem_anomalia_redacao = false and A.id not in (select anomalia_id from correcao)
--- union select A.id, 'traducao', 't' from anomalia as A where A.tem_anomalia_redacao = false and A.id in (select anomalia_id from correcao);
-
-
-
---select  U.id_utilizador, T.id_tempo, 'redação', 't' from anomalia as A, correcao as C, incidencia as I natural join d_utilizador as U, d_tempo as T  where A.tem_anomalia_redacao = true and A.id not in (select id from anomalia_traducao) and I.anomalia_id = A.id and C.anomalia_id = A.id and extract(day from A.ts) = T.dia and extract(month from A.ts) = T.mes and extract(year from A.ts) = T.ano
+insert into f_anomalia (id_utilizador, id_tempo, id_local, id_lingua,
+                        tipo_anomalia, com_proposta)
+select DU.id_utilizador, DT.id_tempo, DLO.id_local, DLI.id_lingua,
+       get_tipo_anomalia(A.id), anomalia_tem_proposta(A.id)
+from anomalia as A,
+     incidencia as I,
+     (item natural join local_publico) as L,
+     d_utilizador as DU,
+     d_tempo as DT,
+     d_local as DLO,
+     d_lingua as DLI
+where A.id = I.anomalia_id
+      and I.item_id = L.id
+      and I.email = DU.email
+      and extract (day from A.ts) = DT.dia
+      and extract (isodow from A.ts) = DT.dia_da_semana
+      and extract (week from A.ts) = DT.semana
+      and extract (month from A.ts) = DT.mes
+      and extract (quarter from A.ts) = DT.trimestre
+      and extract (year from A.ts) = DT.ano
+      and L.latitude = DLO.latitude
+      and L.longitude = DLO.longitude
+      and A.lingua = DLI.lingua;

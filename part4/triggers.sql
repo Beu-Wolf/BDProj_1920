@@ -19,6 +19,28 @@ create trigger check_overlap
 after insert on anomalia_traducao 
 for each row execute procedure check_overlap_proc();
 
+-- RI-2
+create or replace function
+check_languages() returns trigger
+as $$
+    declare
+        lingua1 VARCHAR(255);
+    begin
+        select lingua into lingua1
+        from anomalia where id = new.id;
+
+        if lingua1 = new.lingua2 then
+            raise exception
+            'As linguas da anomalia % não podem ser iguais.', new.id;
+        end if;
+        return new;
+    end;
+$$ language plpgsql;
+
+create trigger check_lang
+after insert on anomalia_traducao
+for each row execute procedure check_languages();
+
 -- RI-4
 -- TODO: tambem esta a fazer verificacoes dos RI5 e RI6. ver com professor se podemos deixar assim
 create or replace function
