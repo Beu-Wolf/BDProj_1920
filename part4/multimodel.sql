@@ -93,7 +93,7 @@ create table f_anomalia (
 
 
 insert into f_anomalia
-select  U.id_utilizador, T.id_tempo, L.id_local, G.id_lingua, 'redação', true
+select  U.id_utilizador, T.id_tempo, L.id_local, G.id_lingua, 'redacao', true
         from anomalia as A, correcao as C, incidencia as I,
         item as M ,d_utilizador as U, d_tempo as T, d_local as L, d_lingua as G
         where A.tem_anomalia_redacao = true
@@ -109,7 +109,7 @@ select  U.id_utilizador, T.id_tempo, L.id_local, G.id_lingua, 'redação', true
         and U.email = I.email
         and A.lingua = G.lingua
 union
-select  U.id_utilizador, T.id_tempo, L.id_local, G.id_lingua, 'redação', false
+select  U.id_utilizador, T.id_tempo, L.id_local, G.id_lingua, 'redacao', false
         from anomalia as A, incidencia as I,
         item as M ,d_utilizador as U, d_tempo as T, d_local as L, d_lingua as G
         where A.tem_anomalia_redacao = true
