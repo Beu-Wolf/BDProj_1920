@@ -1,11 +1,30 @@
 TODO: Discutir estas soluções quando tivermos tempo e arranjar justificações
 
-1.1 - Sendo um tamanho tão grande, valerá a pena criar um índice e usá-lo?
+1.1
+ -> vale a pena usar indice
+  * caso tivessemos de criar um indice com data_hora como chave de procura na tabela proposta de correcao, este seria um indice unclustered,
+  logo, no pior dos casos, teriamos de percorrer todas as paginas pela qual a tabela se distribui.
+  Tendo em conta que esta query devolve mais de 10% da tabela, o custo associado a indexacao (percorrer a
+  B+ Tree mais o custo associado a dar fetch a muitas paginas de memoria), ultrapassa 
+  o custo de apenas percorrer a tabela toda. <nota a quote do livro
 
-1.2 -  Usar B+ tree indexada à data_hora na tabela proposta_de_correção.
+  quote livro:
+    3a edicao do database management systems, secao 12.3.1
+    "As a rule of thumb, it is probably cheaper to simply scan the entire table (instead of using
+    an unclustered index) if over 5% of the tuples ar eto be retrieved."
+
+1.2
+ -> vale a pena usar indice
+  * Seguindo o mesmo raciocinio usado na alinea anterior e tendo em conta que o query devolve menos de 0.001%
+  de resultados, vale a pena usar um indice.
+
+ -> que indice usar
+  * TODO
+Usar B+ tree indexada à data_hora na tabela proposta_de_correção.
 A árvore B+ é a melhor para queries que usam operadores de maior, menor ou igual, pois 
 partindo da raiz para as folhas é facil encontrar o primeiro valor abaixo da data_hora incial
 e depois seguir todas as linhas até encontrar a data_hora final
+
 
 2 - Usar Hash index sobre anomalia_id na tabela incidencia
 Hash index é o melhor para queries que usam operadores de igual, pois se a função de 
