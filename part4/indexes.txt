@@ -1,5 +1,3 @@
-TODO: Discutir estas soluções quando tivermos tempo e arranjar justificações
-
 1.1
  -> vale a pena usar indice
   * caso tivessemos de criar um indice com data_hora como chave de procura na tabela proposta de correcao, este seria um indice unclustered,
@@ -28,15 +26,13 @@ e depois seguir todas as linhas até encontrar a data_hora final
 2 - Como o valor a procurar é a chave primária, o pgsql cria um index automaticamente 
 aquando da criação da tabela, logo não é necessário criar nenhum 
 
+# Usar Hash index sobre anomalia_id na tabela incidencia
+# Hash index é o melhor para queries que usam operadores de igual, pois se a função de 
+# hashing for ótima, vai dividir uniformemente os valores pelos vários "baldes".
+# Portanto ao executar a query, basta aplicar a hash function ao anomalia_id e pesquisar
+# no "balde" correspondente.
 
-
-Usar Hash index sobre anomalia_id na tabela incidencia
-Hash index é o melhor para queries que usam operadores de igual, pois se a função de 
-hashing for ótima, vai dividir uniformemente os valores pelos vários "baldes".
-Portanto ao executar a query, basta aplicar a hash function ao anomalia_id e pesquisar
-no "balde" correspondente.
-
-3.1 - Sendo um tamanho tão grande, valerá a pena criar um índice e usá-lo?
+3.1 - Sendo um tamanho tão grande, valerá a pena criar um indice e usá-lo?
 
 3.2 - Usar B+ tree indexada à anomalia_id na tabela correcao
 Como especificado antes, a árvore é a melhor estrutura para este tipo de queries. Neste
@@ -46,6 +42,3 @@ resto da tabela até ao fim
 4 - Usar B+ tree indexada à ts, language sobre anomalia.
 B+ suporta índices multiplos e neste caso é o que temos de usar, para poder filtrar
 logo pelos parâmetros desejados. Temos de manter a ordem dos wheres da query.
-
-
-TODO: Discutir uso de índices multiplos em 1, 2, 3
