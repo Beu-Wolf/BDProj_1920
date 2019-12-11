@@ -25,8 +25,12 @@ A árvore B+ é a melhor para queries que usam operadores de maior, menor ou igu
 partindo da raiz para as folhas é facil encontrar o primeiro valor abaixo da data_hora incial
 e depois seguir todas as linhas até encontrar a data_hora final
 
+2 - Como o valor a procurar é a chave primária, o pgsql cria um index automaticamente 
+aquando da criação da tabela, logo não é necessário criar nenhum 
 
-2 - Usar Hash index sobre anomalia_id na tabela incidencia
+
+
+Usar Hash index sobre anomalia_id na tabela incidencia
 Hash index é o melhor para queries que usam operadores de igual, pois se a função de 
 hashing for ótima, vai dividir uniformemente os valores pelos vários "baldes".
 Portanto ao executar a query, basta aplicar a hash function ao anomalia_id e pesquisar
@@ -39,9 +43,9 @@ Como especificado antes, a árvore é a melhor estrutura para este tipo de queri
 caso até é mais facilidata, pois basta encontrar a anomalia_id menor e seguir todo o
 resto da tabela até ao fim
 
-4 - Usar B+ tree indexada à ts, tem_anomalia_redacao, language sobre anomalia.
+4 - Usar B+ tree indexada à ts, language sobre anomalia.
 B+ suporta índices multiplos e neste caso é o que temos de usar, para poder filtrar
-logo pelos parâmetros desejados.
+logo pelos parâmetros desejados. Temos de manter a ordem dos wheres da query.
 
 
 TODO: Discutir uso de índices multiplos em 1, 2, 3
