@@ -20,9 +20,9 @@ Como especificado antes, a árvore é a melhor estrutura para este tipo de queri
 caso até é mais facilidata, pois basta encontrar a anomalia_id menor e seguir todo o
 resto da tabela até ao fim
 
-4 - Usar B+ tree indexada à ts, tem_anomalia_redacao, language sobre anomalia.
+4 - Usar B+ tree indexada à ts, language sobre anomalia.
 B+ suporta índices multiplos e neste caso é o que temos de usar, para poder filtrar
-logo pelos parâmetros desejados.
+logo pelos parâmetros desejados. Temos de manter a ordem dos wheres da query.
 
 
 TODO: Discutir uso de índices multiplos em 1, 2, 3
