@@ -91,16 +91,88 @@ create table f_anomalia (
     constraint pk_f_anomalia primary key(id_utilizador, id_tempo, id_local, id_lingua)
 );
 
-insert into f_anomalia values(1, 7, 4, 3, 'tradução', TRUE);
-insert into f_anomalia values(2, 10, 2, 7, 'tradução', FALSE);
-insert into f_anomalia values(2, 5, 3, 6, 'tradução', TRUE);
-insert into f_anomalia values(3, 6, 4, 8, 'redação', TRUE);  --3
-insert into f_anomalia values(3, 8, 5, 5, 'redação', TRUE);  --9
-insert into f_anomalia values(3, 1, 1, 4, 'redação', TRUE);  --11
-insert into f_anomalia values(4, 10, 2, 7, 'tradução', FALSE); --5
-insert into f_anomalia values(4, 11, 5, 2, 'tradução', FALSE); --8
-insert into f_anomalia values(5, 10, 4, 5, 'tradução', TRUE); --1
-insert into f_anomalia values(5, 10, 2, 8, 'redação', TRUE); --6
-insert into f_anomalia values(5, 2, 5, 1, 'tradução', TRUE); --7
+
+insert into f_anomalia
+select  U.id_utilizador, T.id_tempo, L.id_local, G.id_lingua, 'redação', true
+        from anomalia as A, correcao as C, incidencia as I, 
+        item as M ,d_utilizador as U, d_tempo as T, d_local as L, d_lingua as G  
+        where A.tem_anomalia_redacao = true 
+        and A.id not in (select id from anomalia_traducao) 
+        and I.anomalia_id = A.id 
+        and M.id = I.item_id 
+        and C.anomalia_id = A.id 
+        and extract(day from A.ts) = T.dia 
+        and extract(month from A.ts) = T.mes 
+        and extract(year from A.ts) = T.ano 
+        and L.latitude = M.latitude 
+        and L.longitude = M.longitude 
+        and U.email = I.email 
+        and A.lingua = G.lingua
+union
+select  U.id_utilizador, T.id_tempo, L.id_local, G.id_lingua, 'redação', false 
+        from anomalia as A, incidencia as I, 
+        item as M ,d_utilizador as U, d_tempo as T, d_local as L, d_lingua as G  
+        where A.tem_anomalia_redacao = true 
+        and A.id not in (select id from anomalia_traducao)
+        and A.id not in (select anomalia_id from correcao)
+        and I.anomalia_id = A.id 
+        and M.id = I.item_id 
+        and extract(day from A.ts) = T.dia 
+        and extract(month from A.ts) = T.mes 
+        and extract(year from A.ts) = T.ano 
+        and L.latitude = M.latitude 
+        and L.longitude = M.longitude 
+        and U.email = I.email 
+        and A.lingua = G.lingua
+union
+select  U.id_utilizador, T.id_tempo, L.id_local, G.id_lingua, 'traducao', false 
+        from anomalia as A, incidencia as I, 
+        item as M ,d_utilizador as U, d_tempo as T, d_local as L, d_lingua as G  
+        where A.tem_anomalia_redacao = false 
+        and A.id not in (select anomalia_id from correcao)
+        and I.anomalia_id = A.id 
+        and M.id = I.item_id 
+        and extract(day from A.ts) = T.dia 
+        and extract(month from A.ts) = T.mes 
+        and extract(year from A.ts) = T.ano 
+        and L.latitude = M.latitude 
+        and L.longitude = M.longitude 
+        and U.email = I.email 
+        and A.lingua = G.lingua
+union
+select  U.id_utilizador, T.id_tempo, L.id_local, G.id_lingua, 'traducao', true 
+        from anomalia as A, incidencia as I, correcao as C, 
+        item as M ,d_utilizador as U, d_tempo as T, d_local as L, d_lingua as G  
+        where A.tem_anomalia_redacao = false 
+        and C.anomalia_id = A.id
+        and I.anomalia_id = A.id 
+        and M.id = I.item_id 
+        and extract(day from A.ts) = T.dia 
+        and extract(month from A.ts) = T.mes 
+        and extract(year from A.ts) = T.ano 
+        and L.latitude = M.latitude 
+        and L.longitude = M.longitude 
+        and U.email = I.email 
+        and A.lingua = G.lingua;
+
+-- insert into f_anomalia values(1, 7, 4, 3, 'tradução', TRUE);
+-- insert into f_anomalia values(2, 10, 2, 7, 'tradução', FALSE);
+-- insert into f_anomalia values(2, 5, 3, 6, 'tradução', TRUE);
+-- insert into f_anomalia values(3, 6, 4, 8, 'redação', TRUE);  --3
+-- insert into f_anomalia values(3, 8, 5, 5, 'redação', TRUE);  --9
+-- insert into f_anomalia values(3, 1, 1, 4, 'redação', TRUE);  --11
+-- insert into f_anomalia values(4, 10, 2, 7, 'tradução', FALSE); --5
+-- insert into f_anomalia values(4, 11, 5, 2, 'tradução', FALSE); --8
+-- insert into f_anomalia values(5, 10, 4, 5, 'tradução', TRUE); --1
+-- insert into f_anomalia values(5, 10, 2, 8, 'redação', TRUE); --6
+-- insert into f_anomalia values(5, 2, 5, 1, 'tradução', TRUE); --7
 
 
+-- select  U.id_utilizador, 'redação', 't' from anomalia as A, correcao as C, incidencia as I natural join d_utilizador as U  where A.tem_anomalia_redacao = true and A.id not in (select id from anomalia_traducao) and I.anomalia_id = A.id and C.anomalia_id = A.id
+-- union select A.id, 'redacao', 'f' from anomalia as A where A.id not in (select anomalia_id from correcao) and A.id not in (select id from anomalia_traducao) 
+-- union select A.id, 'traducao', 'f' from anomalia as A where A.tem_anomalia_redacao = false and A.id not in (select anomalia_id from correcao)
+-- union select A.id, 'traducao', 't' from anomalia as A where A.tem_anomalia_redacao = false and A.id in (select anomalia_id from correcao);
+
+
+
+--select  U.id_utilizador, T.id_tempo, 'redação', 't' from anomalia as A, correcao as C, incidencia as I natural join d_utilizador as U, d_tempo as T  where A.tem_anomalia_redacao = true and A.id not in (select id from anomalia_traducao) and I.anomalia_id = A.id and C.anomalia_id = A.id and extract(day from A.ts) = T.dia and extract(month from A.ts) = T.mes and extract(year from A.ts) = T.ano
