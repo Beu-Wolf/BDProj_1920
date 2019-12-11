@@ -153,14 +153,51 @@
     \normalsize
     
     \Large
-    \textbf{Índices}\\
-    \normalsize
-    \par TODO\\
+    \textbf{Índices TODO:}% Format this to be pretty pls
+    \normalsize \\
+    \par 1.1
+    \par Um índice na tabela proposta\_de\_correcao com o atributo data\_hora como chave de procura é um índice \textit{unclustered}: No pior dos casos, seria necessário percorrer todas as páginas do disco pela qual a tabela se distribui para se encontrar um resultado.
+
+    \par Tendo em conta que esta query devolve mais de 10\% do total de registos da tabela e que o custo associado à indexação (percorrer a B+-Tree, juntamente com o custo associado a carregar de disco todas as páginas de memória necessárias para encontrar o resultado pretendido) ultrapassa o custo de apenas percorrer a tabela toda, não compensa criar um índice para esta pesquisa.
+
+    \par Esta ideia é reforçada pela bibliografia da cadeira:
+    \begin{quotation}
+        "As a rule of thumb, it is probably cheaper to simply scan the entire table (instead of using an unclustered index) if over 5\% of the tuples are to be retrieved." ~ TODO:% citar do manual de BD versao 3, secção 12.3.1. Usar bibitem?
+    \end{quotation}
+    % check: a quote do livro serve para qualquer tipo de indice?
     
+    
+    \par 1.2% Format this to be pretty pls
+    \par Seguindo o raciocínio usado na questão anterior e tendo em conta que, neste caso, o query devolve menos de 0.001\% do total de registos da tabela, é justificável a utilização de índices.
+    
+    \par Como o filtro de pesquisa é um intervalo de valores, decidiu-se implementar um indice com B+-Tree, uma vez que é o mais adequado para este tipo de procura: Ao contrário dos Hash Indices, a B+-Tree mantém os índices ordenados por chave. Deste modo é possível filtrar um intervalo destes mesmos índices, encontrando o índice com o valor mínimo para o intervalo e explorando o conjunto ordenado dos índices sucessores, enquanto estes ainda estiverem dentro do intervalo pretendido.
+    \par O índice foi aplicado sobre o atributo \textit{{data\_hora}} da tabela \textit{proposta\_de\_correcao}\\
+    
+    \par 2
+    \par Neste query está a ser procurado um registo pela sua \textit{primary key}. Como o pgsql cria automaticamente um índice para as chaves primárias de cada tabela, não será necessário criar um novo índice.\\
+    
+    \par 3.1
+    \par Pelas mesmas razões apresentadas em 1.1, este caso não é o melhor para se usar índices, acabando a sua implementação por ser mais dispendiosa do que uma procura simples.\\
+    
+    \par 3.2
+    \par TODO \\
+    
+    
+    \par 4
+    \par 0
+    
+    \par Para minimizar o numero de blocos acedidos em disco neste \textit{query} decidiu-se implementar um índice que reduzisse o espaço de procura. Ao usar o índice múltiplo \textit{(timestamp, language)} numa B+-Tree na tabela \textit{anomalia} conseguimos minimizar o numero de acessos a disco.
+    
+    [?] e preciso dizer como e que reduz?\\
+    [?] temos de mudar a ordem do where no query? passar para ts, language e tem\_an\_red?\\
+    
+    [!] eh importante dizer que a ordem das chaves tem de ser a mesma da ordem de selecao do query
+    \\
+    \\
     \Large
     \textbf{Modelo Multidimensional}\\
     \normalsize
-    \par Para criar um modelo Multidimensional, usou-se um esquema em estrela, tendo as seguintes  dimensões:
+    \par Para criar um modelo Multidimensional, usou-se um esquema em estrela com as seguintes  dimensões:
     
     \begin{enumerate}[leftmargin=3\parindent]
         \item Utilizador (Quem criou a Anomalia)
