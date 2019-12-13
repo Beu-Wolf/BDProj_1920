@@ -171,10 +171,10 @@
     \par \textbf{3.2.} Usando o mesmo raciocínio usado em 1.1 e em 1.2, decidiu-se usar uma $B^+$ Tree na tabela \textit{correcao}, usando como chave \textit{anomalia\_id}.\\
 
 
-    \par \textbf{4.} Chegou-se à conclusão de que, para este caso, o filtro \textit{LIKE} atua como um \textit{<BETWEEN x AND y>}, sendo \textit{x} o padrão dado e \textit{y} o seu sucessor lexicográfico com o mesmo número de caracteres. Por exemplo, se o padrão for \textit{ABC\%}, o filtro selecionará todas as \textit{strings} lexicograficamente entre \textit{ABC} e \textit{ABD}: \textit{ABC, ABCA, ..., ABCAA, ..., ABD}.
+    \par \textbf{4.} Chegou-se à conclusão de que, para este caso, o filtro \textit{LIKE} atua como um \textit{<BETWEEN x AND y>}, sendo \textit{x} o padrão dado e \textit{y} o seu sucessor lexicográfico com o mesmo número de caracteres. Por exemplo, se o padrão for \textit{ABC\%}, o filtro selecionará todas as \textit{strings s} tal que \textit{ABC} $<= s <$ \textit{ABD}, lexicograficamente.
 
-    \par Se a percentagem de registos devolvidos por esta \textit{query} for superior a 5\% não se justifica utilizar indexação. Caso contrário, utilizar-se-ia uma $B^+$ Tree (por ser a única estrutura que suporta índices múltiplos) na tabela \textit{anomalia} com a chave múltipla \textit{(ts, language)}.
-    \par É importante que a chave múltipla tenha esta ordem (a ordem pela qual as chaves aparecem na \textit{query}) para otimizar esta procura.\\
+    \par Se a percentagem de registos devolvidos por esta \textit{query} for superior a 5\%, dada a análise feita nas respostas anteriores, não se justifica utilizar indexação. Caso contrário, utilizar-se-ia uma $B^+$ Tree (dado que \textit{Hash Indices} não suportam índices múltiplos) na tabela \textit{anomalia} com a chave múltipla \textit{(ts, language)}.
+    \par É importante que a chave múltipla tenha esta ordem (a ordem pela qual as chaves aparecem na \textit{query}) para otimizar a procura.\\
 
     \newpage
     \Large
@@ -330,7 +330,7 @@ where A.id = I.anomalia_id
     \Large
     \textbf{Data Analytics}\\
     \normalsize
-    \par Para efetuar a análise pedida decidiu-se, por simplicidade, usar a instrução \textit{CUBE}:
+    \par Para efetuar a análise pedida decidiu-se, por simplicidade, usar a cláusula \textit{CUBE}:
     \footnotesize \begin{verbatim}
     select U.tipo, L.lingua, T.dia_da_semana, count(tipo_anomalia)
     from f_anomalia         natural join
