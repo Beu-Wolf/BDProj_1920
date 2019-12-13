@@ -38,111 +38,111 @@
     \footnotesize
     \begin{verbatim}
     -- RI-1
-    create or replace function
-    check_overlap_proc() returns trigger as $$
-        declare
+    CREATE OR REPLACE FUNCTION
+    check_overlap_proc() RETURNS TRIGGER AS $$
+        DECLARE
             zona1   box;
-        begin
-            select zona into zona1
-            from anomalia where id=new.id;
+        BEGIN
+            SELECT zona INTO zona1
+            FROM anomalia WHERE id=new.id;
 
-            if zona1 && new.zona2 then
-                raise exception
+            IF zona1 && new.zona2 THEN
+                RAISE EXCEPTION
                 'As zonas da anomalia % não se podem intersetar.', new.id;
-            end if;
-            return new;
-        end;
-    $$ language plpgsql;
+            END IF;
+            RETURN new;
+        END;
+    $$ LANGUAGE plpgsql;
 
-    create trigger check_overlap
-    after insert on anomalia_traducao
-    for each row execute procedure check_overlap_proc();
+    CREATE TRIGGER check_overlap
+    AFTER INSERT ON anomalia_traducao
+    FOR EACH ROW EXECUTE PROCEDURE check_overlap_proc();
 
     -- RI-4
-    create or replace function
-    check_completeness_proc() returns trigger as $$
-        declare
+    CREATE OR REPLACE FUNCTION
+    check_completeness_proc() RETURNS TRIGGER AS $$
+        DECLARE
             inRegular   boolean;
             inQualified boolean;
-        begin
-            select exists(
-                select 1
-                from utilizador_regular
-                where email = new.email
-            ) into inRegular;
+        BEGIN
+            SELECT exists
+                SELECT 1
+                FROM utilizador_regular
+                WHERE email = new.email
+            ) INTO inRegular;
 
-            select exists(
-                select 1
-                from utilizador_qualificado
-                where email = new.email
-            ) into inQualified;
+            SELECT exists(
+                SELECT 1
+                FROM utilizador_qualificado
+                WHERE email = new.email
+            ) INTO inQualified;
 
-            if inRegular and inQualified then
-                raise exception
+            IF inRegular AND inQualified THEN
+                RAISE EXCEPTION
                 'Utilizador % não pode estar em utilizador_regular e\
                 utilizador qualificado simultaneamente', new.email;
 
-            elseif (not inRegular and not inQualified) then
-                raise exception
+            ELSEIF (NOT inRegular AND NOT inQualified) THEN
+                RAISE EXCEPTION
                 'Utilizador % tem de estar em utilizador_regular\
                 ou utilizador_qualificado', new.email;
-            end if;
-            return new;
-        end;
-    $$ language plpgsql;
+            END IF;
+            RETURN new;
+        END;
+    $$ LANGUAGE plpgsql;
 
-    create constraint trigger check_completeness
-    after insert on utilizador
-    deferrable initially deferred
-    for each row execute procedure check_completeness_proc();
+    CREATE CONSTRAINT TRIGGER check_completeness
+    AFTER INSERT ON utilizador
+    DEFERRABLE INITIALLY DEFERRED
+    FOR EACH ROW EXECUTE PROCEDURE check_completeness_proc();
 
     -- RI-5
-    create or replace function
-    check_user_qualificado_proc() returns trigger as $$
-        declare
+    CREATE OR REPLACE FUNCTION
+    check_user_qualificado_proc() RETURNS TRIGGER AS $$
+        DECLARE
             inRegular boolean;
-        begin
-            select exists(
-                select 1
-                from utilizador_regular
-                where email = new.emai
-            ) into inRegular;
+        BEGIN
+            SELECT exists(
+                SELECT 1
+                FROM utilizador_regular
+                WHERE email = new.emai
+            ) INTO inRegular;
 
-            if inRegular then
-                raise exception
+            IF inRegular THEN
+                RAISE EXCEPTION
                 'Utilizador % já está em utilizador_regular', new.email;
-            end if;
-            return new;
-        end;
-    $$ language plpgsql;
+            END IF;
+            RETURN new;
+        END;
+    $$ LANGUAGE plpgsql;
 
-    create trigger check_user_qualificado
-    after insert on utilizador_qualificado
-    for each row execute procedure check_user_qualificado_proc();
+    CREATE TRIGGER check_user_qualificado
+    AFTER INSERT ON utilizador_qualificado
+    FOR EACH ROW EXECUTE PROCEDURE check_user_qualificado_proc();
 
     --RI-6
-    create or replace function
-    check_user_regular_proc() returns trigger as $$
-        declare
+    CREATE OR REPLACE FUNCTION
+    check_user_regular_proc() RETURNS TRIGGER AS $$
+        DECLARE
             inQualified boolean;
-        begin
-            select exists(
-                select 1
-                from utilizador_qualificado
-                where email = new.email
-            ) into inQualified;
+        BEGIN
+            SELECT exists(
+                SELECT 1
+                FROM utilizador_qualificado
+                WHERE email = new.email
+            ) INTO inQualified;
 
-            if inQualified then
-                raise exception
+            IF inQualified THEN
+                RAISE EXCEPTION
                 'Utilizador % já está em utilizador_qualificado', new.email;
-            end if;
-            return new;
-        end;
-    $$ language plpgsql;
+            END IF;
+            RETURN new;
+        END;
+    $$ LANGUAGE plpgsql;
 
-    create trigger check_user_regular
-    after insert on utilizador_regular
-    for each row execute procedure check_user_regular_proc();
+    CREATE TRIGGER check_user_regular
+    AFTER INSERT ON utilizador_regular
+    FOR EACH ROW EXECUTE PROCEDURE check_user_regular_proc();
     \end{verbatim}
     \normalsize
 
@@ -164,7 +164,7 @@
     \par Como o filtro de pesquisa é um intervalo de valores, decidiu-se implementar um índice com $B^+$ Tree, uma vez que é o mais adequado para este tipo de procura: Ao contrário dos Hash Indices, a $B^+$ Tree guarda as referências para os registos, ordenados por chave. Deste modo é possível filtrar um intervalo destes mesmos índices, encontrando o índice com o valor mínimo para o intervalo e explorando o conjunto ordenado dos índices sucessores, enquanto estes ainda estiverem dentro do intervalo pretendido.
     \par O índice foi aplicado sobre o atributo \textit{{data\_hora}} da tabela \textit{proposta\_de\_correcao}:\\
     \footnotesize \begin{verbatim}
-        create index idx_data_hora on proposta_de_correcao using btree (data_hora);
+        CREATE INDEX idx_data_hora ON proposta_de_correcao USING BTREE (data_hora);
     \end{verbatim}\normalsize
 
     \par \textbf{2.} Nesta query está a ser procurado um registo pela sua \textit{primary key}. Como o \textit{pgsql} cria automaticamente um índice para as chaves primárias de cada tabela, não será necessário criar um novo índice.\\
@@ -173,7 +173,7 @@
 
     \par \textbf{3.2.} Usando o mesmo raciocínio usado em 1.1 e em 1.2, decidiu-se usar uma $B^+$ Tree na tabela \textit{correcao}, usando como chave \textit{anomalia\_id}:\\
     \footnotesize \begin{verbatim}
-        create index idx_anomalia_id on correcao using btree (anomalia_id);
+        CREATE INDEX idx_anomalia_id ON correcao USING BTREE (anomalia_id);
     \end{verbatim}\normalsize
 
 
@@ -183,18 +183,17 @@
     \par Para optimizar a \textit{query}, decidiu-se reduzir ao máximo o espaço de possíveis resultados, selecionando logo de início os registos que sejam anomalia de redação. Para o índice ficar coerente com a \textit{query}, é necessário mudar a ordem pela qual as colunas aparecem na mesma:
     \footnotesize
     \begin{verbatim}
-select id, lingua, descricao
-from anomalia
-where tem_anomalia_redacao = True
-    and ts between <ts_1> and <ts_2>
-    and language like '<SOME_PATTERN>%';
+SELECT id, lingua, descricao
+FROM anomalia
+WHERE tem_anomalia_redacao = True
+    AND ts BETWEEN <ts_1> AND <ts_2>
+    AND language LIKE '<SOME_PATTERN>%';
     \end{verbatim}
     \normalsize
 
 
     \footnotesize \begin{verbatim}
-create index idx_ts_language on anomalia
-    using btree (tem_anomalia_redacao, ts, language);
+CREATE INDEX idx_ts_language ON anomalia USING BTREE (tem_anomalia_redacao, ts, language);
     \end{verbatim}\normalsize
 
     \Large
@@ -203,129 +202,130 @@ create index idx_ts_language on anomalia
     \par Para criar um modelo Multidimensional, usou-se um esquema em estrela com as dimensões Utilizador, Tempo, Local e Língua. De seguida apresenta-se o código usado para o criar:
 
     \footnotesize \begin{verbatim}
-drop table d_utilizador cascade;
-drop table d_tempo cascade;
-drop table d_local cascade;
-drop table d_lingua cascade;
-drop table f_anomalia cascade;
+DROP TABLE d_utilizador CASCADE;
+DROP TABLE d_tempo CASCADE;
+DROP TABLE d_local CASCADE;
+DROP TABLE d_lingua CASCADE;
+DROP TABLE f_anomalia CASCADE;
 
-create table d_utilizador (
+CREATE TABLE d_utilizador (
     id_utilizador serial,
-    email         varchar(255) not null,
-    tipo          varchar(255) not null,
-    constraint pk_d_utilizador primary key(id_utilizador)
+    email         varchar(255) NOT NULL,
+    tipo          varchar(255) NOT NULL,
+    CONSTRAINT pk_d_utilizador PRIMARY KEY(id_utilizador)
 );
 
-insert into d_utilizador (email, tipo)
-select email, 'qualificado' as tipo
-from utilizador_qualificado
-union select email, 'regular' as tipo
-from utilizador_regular;
+INSERT INTO d_utilizador (email, tipo)
+SELECT email, 'qualificado' AS tipo
+FROM utilizador_qualificado
+UNION SELECT email, 'regular' AS tipo
+FROM utilizador_regular;
 
-create table d_tempo (
+CREATE TABLE d_tempo (
     id_tempo        serial,
-    dia             integer not null,
-    dia_da_semana   integer not null,
-    semana          integer not null,
-    mes             integer not null,
-    trimestre       integer not null,
-    ano             integer not null,
-    constraint pk_d_tempo primary key(id_tempo)
+    dia             integer NOT NULL,
+    dia_da_semana   integer NOT NULL,
+    semana          integer NOT NULL,
+    mes             integer NOT NULL,
+    trimestre       integer NOT NULL,
+    ano             integer NOT NULL,
+    CONSTRAINT pk_d_tempo PRIMARY KEY(id_tempo)
 );
 
-insert into d_tempo(dia, dia_da_semana, semana, mes, trimestre, ano)
-select  extract(day from ts),
-        extract(isodow from ts),
-        extract(week  from ts),
-        extract(month from ts),
-        extract(quarter from ts),
-        extract(year from ts)
-from anomalia union select extract(day from data_hora),
-       extract(isodow from data_hora),
-       extract(week  from data_hora),
-       extract(month from data_hora),
-       extract(quarter from data_hora),
-       extract(year from data_hora)
-from proposta_de_correcao;
+INSERT INTO d_tempo(dia, dia_da_semana, semana, mes, trimestre, ano)
+SELECT  extract(day FROM ts),
+        extract(isodow FROM ts),
+        extract(week  FROM ts),
+        extract(month FROM ts),
+        extract(quarter FROM ts),
+        extract(year FROM ts)
+FROM anomalia UNION SELECT extract(day from data_hora),
+       extract(isodow FROM data_hora),
+       extract(week  FROM data_hora),
+       extract(month FROM data_hora),
+       extract(quarter FROM data_hora),
+       extract(year FROM data_hora)
+FROM proposta_de_correcao;
 
-create table d_local (
+CREATE TABLE d_local (
     id_local    serial,
-    latitude    numeric(8, 6) not null,
-    longitude   numeric(9, 6) not null,
-    nome        varchar(255)  not null,
-    constraint pk_d_local primary key(id_local)
+    latitude    numeric(8, 6) NOT NULL,
+    longitude   numeric(9, 6) NOT NULL,
+    nome        varchar(255)  NOT NULL,
+    CONSTRAINT pk_d_local PRIMARY KEY(id_local)
 );
 
-insert into d_local (latitude, longitude, nome)
-select latitude, longitude, nome from local_publico;
+INSERT INTO d_local (latitude, longitude, nome)
+SELECT latitude, longitude, nome FROM local_publico;
 
-create table d_lingua (
+CREATE TABLE d_lingua (
     id_lingua   serial,
-    lingua      varchar(255) not null,
-    constraint pk_d_lingua primary key(id_lingua)
+    lingua      varchar(255) NOT NULL,
+    CONSTRAINT pk_d_lingua PRIMARY KEY(id_lingua)
 );
 
-insert into d_lingua (lingua)
-select distinct lingua from anomalia
-union select distinct lingua2 from anomalia_traducao;
+INSERT INTO d_lingua (lingua)
+SELECT DISTINCT lingua FROM anomalia
+UNION SELECT DISTINCT lingua2 FROM anomalia_traducao;
 
-create table f_anomalia (
+CREATE TABLE f_anomalia (
     id_utilizador   integer,
     id_tempo        integer,
     id_local        integer,
     id_lingua       integer,
-    tipo_anomalia   varchar(255) not null,
-    com_proposta    boolean not null,
-    constraint fk_utilizador foreign key(id_utilizador)
-        references d_utilizador(id_utilizador) on delete cascade,
-    constraint fk_tempo foreign key(id_tempo)
-        references d_tempo(id_tempo) on delete cascade,
-    constraint fk_local foreign key(id_local)
-        references d_local(id_local) on delete cascade,
-    constraint fk_lingua foreign key(id_lingua)
-        references d_lingua(id_lingua) on delete cascade,
-    constraint pk_f_anomalia primary key(id_utilizador, id_tempo, id_local, id_lingua)
+    tipo_anomalia   varchar(255) NOT NULL,
+    com_proposta    boolean NOT NULL,
+    CONSTRAINT fk_utilizador foreign key(id_utilizador)
+        references d_utilizador(id_utilizador) ON DELETE CASCADE,
+    CONSTRAINT fk_tempo foreign key(id_tempo)
+        references d_tempo(id_tempo) ON DELETE CASCADE,
+    CONSTRAINT fk_local foreign key(id_local)
+        references d_local(id_local) ON DELETE CASCADE,
+    CONSTRAINT fk_lingua foreign key(id_lingua)
+        references d_lingua(id_lingua) ON DELETE CASCADE,
+    CONSTRAINT pk_f_anomalia PRIMARY KEY(id_utilizador, id_tempo, id_local, id_lingua)
 );
 
-create or replace function get_tipo_anomalia(id integer) returns varchar(255) as $$
-begin
-    if id in (select A.id from anomalia_traducao A) then
-        return 'traducao';
-    else
-        return 'redacao';
-    end if;
-end $$ language plpgsql;
+CREATE OR REPLACE FUNCTION get_tipo_anomalia(id integer) RETURNS varchar(255) AS $$
+    BEGIN
+        IF id in (SELECT A.id FROM anomalia_traducao A) THEN
+            RETURN 'traducao';
+        else
+            RETURN 'redacao';
+        END IF;
+    END;
+$$ LANGUAGE plpgsql;
 
-create or replace function anomalia_tem_proposta(id integer) returns boolean as $$
-begin
-    if id in (select anomalia_id from correcao) then
-        return true;
-    else
-        return false;
-    end if;
-end
-$$ language plpgsql;
+CREATE OR REPLACE FUNCTION anomalia_tem_proposta(id integer) RETURNS boolean AS $$
+    BEGIN
+        IF id in (SELECT anomalia_id FROM correcao) THEN
+            RETURN true;
+        else
+            RETURN false;
+        END IF;
+    END;
+$$ LANGUAGE plpgsql;
 
-insert into f_anomalia (id_utilizador, id_tempo, id_local, id_lingua,
+INSERT INTO f_anomalia (id_utilizador, id_tempo, id_local, id_lingua,
                         tipo_anomalia, com_proposta)
-select DU.id_utilizador, DT.id_tempo, DLO.id_local, DLI.id_lingua,
+SELECT DU.id_utilizador, DT.id_tempo, DLO.id_local, DLI.id_lingua,
        get_tipo_anomalia(A.id), anomalia_tem_proposta(A.id)
-from anomalia as A,
-     incidencia as I,
-     (item natural join local_publico) as L,
-     d_utilizador as DU,
-     d_tempo as DT,
-     d_local as DLO,
-     d_lingua as DLI
-where A.id = I.anomalia_id
-      and I.item_id = L.id
-      and I.email = DU.email
-      and extract (day from A.ts) = DT.dia
-      and extract (month from A.ts) = DT.mes
-      and extract (year from A.ts) = DT.ano
-      and L.latitude = DLO.latitude
-      and L.longitude = DLO.longitude
-      and A.lingua = DLI.lingua;
+FROM anomalia as A,
+     incidencia AS I,
+     (item NATURAL JOIN local_publico) AS L,S
+     d_utilizador AS DU,
+     d_tempo AS DT,
+     d_local AS DLO,
+     d_lingua AS DLI
+WHERE A.id = I.anomalia_id
+      AND I.item_id = L.id
+      AND I.email = DU.email
+      AND extract (day FROM A.ts) = DT.dia
+      AND extract (month FROM A.ts) = DT.mes
+      AND extract (year FROM A.ts) = DT.ano
+      AND L.latitude = DLO.latitude
+      AND L.longitude = DLO.longitude
+      AND A.lingua = DLI.lingua;
     \end{verbatim}
 
 
@@ -334,12 +334,12 @@ where A.id = I.anomalia_id
     \normalsize
     \par Para efetuar a análise pedida decidiu-se, por simplicidade, usar a cláusula \textit{CUBE}:
     \footnotesize \begin{verbatim}
-    select U.tipo, L.lingua, T.dia_da_semana, count(tipo_anomalia)
-    from f_anomalia         natural join
-         d_utilizador as U  natural join
-         d_tempo as T       natural join
-         d_lingua as L
-    group by cube(U.tipo, L.lingua, T.dia_da_semana);
+    SELECT U.tipo, L.lingua, T.dia_da_semana, count(tipo_anomalia)
+    FROM f_anomalia         NATURAL JOIN
+         d_utilizador AS U  NATURAL JOIN
+         d_tempo AS T       NATURAL JOIN
+         d_lingua AS L
+    group by CUBE(U.tipo, L.lingua, T.dia_da_semana);
     \end{verbatim}\normalsize
 \end{document}
 
